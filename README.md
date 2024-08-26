@@ -26,7 +26,7 @@ This part lists the custom nodes that are added by the plugin and can be found i
 
 ## Scripts
 
-This part lists the scripts that are mean to be subclassed when creating custom nodes for the plugin.
+This part lists the scripts that are meant to be subclassed when creating custom nodes for the plugin.
 
 - <img src="addons\smc\icons\icon_state.png" width="10"/> **State**
 
