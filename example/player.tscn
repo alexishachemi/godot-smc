@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=3 uid="uid://b40vb5q4kvckd"]
+[gd_scene load_steps=68 format=3 uid="uid://b40vb5q4kvckd"]
 
 [ext_resource type="Texture2D" uid="uid://xkjsbirwqwja" path="res://example/sprites/player air spin 48x48.png" id="1_0r6n0"]
 [ext_resource type="Script" path="res://addons/smc/state_machine/state_machine.gd" id="1_jar21"]
@@ -8,17 +8,23 @@
 [ext_resource type="Texture2D" uid="uid://dsl2tj2pq4j1k" path="res://example/sprites/Player Idle 48x48.png" id="3_hraqs"]
 [ext_resource type="Texture2D" uid="uid://c505vjxsdup0x" path="res://example/sprites/player land 48x48.png" id="4_hjo3w"]
 [ext_resource type="Texture2D" uid="uid://dvlrycjlil8ue" path="res://example/sprites/player run 48x48.png" id="5_8842k"]
+[ext_resource type="Texture2D" uid="uid://uo42aak2ueih" path="res://example/sprites/player wall land 48x48.png" id="6_2bfr5"]
+[ext_resource type="Script" path="res://example/ressources/wall_detector.gd" id="6_6b1jq"]
+[ext_resource type="Texture2D" uid="uid://dm68y1bhfojsw" path="res://example/sprites/player wall slide 48x48.png" id="7_t1kmx"]
 [ext_resource type="Script" path="res://example/components/physics_component.gd" id="8_8csqj"]
 [ext_resource type="Script" path="res://example/components/input_component.gd" id="9_b06cs"]
 [ext_resource type="Script" path="res://example/states/idle.gd" id="10_gip77"]
 [ext_resource type="Script" path="res://example/components/stats_component.gd" id="10_tj3p2"]
+[ext_resource type="Script" path="res://example/components/wall_detector_component.gd" id="11_vra7y"]
 [ext_resource type="Script" path="res://example/states/run.gd" id="13_3k7vp"]
 [ext_resource type="Script" path="res://example/states/jump.gd" id="13_jk8jh"]
 [ext_resource type="Script" path="res://example/states/fall.gd" id="14_oees3"]
 [ext_resource type="Script" path="res://example/states/land.gd" id="16_bvkri"]
+[ext_resource type="Script" path="res://example/states/wall_land.gd" id="19_w2h4h"]
+[ext_resource type="Script" path="res://example/states/wall_slide.gd" id="22_taks6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5rfm7"]
-size = Vector2(14, 24)
+size = Vector2(11, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qykrr"]
 atlas = ExtResource("1_0r6n0")
@@ -168,6 +174,26 @@ region = Rect2(288, 0, 48, 48)
 atlas = ExtResource("5_8842k")
 region = Rect2(336, 0, 48, 48)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_4wxdc"]
+atlas = ExtResource("6_2bfr5")
+region = Rect2(192, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0sa5p"]
+atlas = ExtResource("6_2bfr5")
+region = Rect2(240, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iwhgi"]
+atlas = ExtResource("7_t1kmx")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tpgmj"]
+atlas = ExtResource("7_t1kmx")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kg46y"]
+atlas = ExtResource("7_t1kmx")
+region = Rect2(96, 0, 48, 48)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_bqbpv"]
 animations = [{
 "frames": [{
@@ -315,19 +341,75 @@ animations = [{
 "loop": true,
 "name": &"run",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4wxdc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0sa5p")
+}],
+"loop": false,
+"name": &"wall_land",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iwhgi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tpgmj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kg46y")
+}],
+"loop": false,
+"name": &"wall_slide",
+"speed": 10.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_k8o2q"]
+radius = 1.0
+
 [node name="Player" type="CharacterBody2D"]
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-1, 3)
+position = Vector2(-0.5, 3)
 shape = SubResource("RectangleShape2D_5rfm7")
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -1)
 sprite_frames = SubResource("SpriteFrames_bqbpv")
-animation = &"jump"
-frame_progress = 1.0
+animation = &"wall_land"
+
+[node name="LeftWallDetector" type="Node2D" parent="." node_paths=PackedStringArray("area")]
+position = Vector2(8, 3)
+script = ExtResource("6_6b1jq")
+direction_str = "LEFT"
+area = NodePath("area")
+metadata/_edit_group_ = true
+
+[node name="area" type="Area2D" parent="LeftWallDetector"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWallDetector/area"]
+shape = SubResource("CircleShape2D_k8o2q")
+
+[node name="RightWallDetector" type="Node2D" parent="." node_paths=PackedStringArray("area")]
+position = Vector2(-8, 3)
+script = ExtResource("6_6b1jq")
+direction_str = "RIGHT"
+area = NodePath("area")
+metadata/_edit_group_ = true
+
+[node name="area" type="Area2D" parent="RightWallDetector"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWallDetector/area"]
+shape = SubResource("CircleShape2D_k8o2q")
 
 [node name="ComponentManager" type="Node" parent="."]
 script = ExtResource("2_b38yy")
@@ -339,7 +421,7 @@ animated_sprite = NodePath("../../AnimatedSprite")
 [node name="Physics" type="Node" parent="ComponentManager" node_paths=PackedStringArray("body")]
 script = ExtResource("8_8csqj")
 body = NodePath("../..")
-gravity_force = 20.0
+gravity_force = 30.0
 deceleration = 30
 
 [node name="Input" type="Node" parent="ComponentManager"]
@@ -348,13 +430,18 @@ script = ExtResource("9_b06cs")
 [node name="Stats" type="Node" parent="ComponentManager"]
 script = ExtResource("10_tj3p2")
 max_jumps = 2
-jump_force = 800
-alt_jump_force = 600
+jump_force = 1000
+alt_jump_force = 800
 acceleration = 40
 max_speed = 500
 air_acceleration = 30
 air_max_speed = 400
+wall_jump_H_force = 400
 jumps = 2
+
+[node name="WallDetector" type="Node" parent="ComponentManager" node_paths=PackedStringArray("detectors")]
+script = ExtResource("11_vra7y")
+detectors = [NodePath("../../LeftWallDetector"), NodePath("../../RightWallDetector")]
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("component_manager")]
 script = ExtResource("1_jar21")
@@ -375,3 +462,9 @@ script = ExtResource("14_oees3")
 
 [node name="land" type="Node" parent="StateMachine"]
 script = ExtResource("16_bvkri")
+
+[node name="wall_land" type="Node" parent="StateMachine"]
+script = ExtResource("19_w2h4h")
+
+[node name="wall_slide" type="Node" parent="StateMachine"]
+script = ExtResource("22_taks6")

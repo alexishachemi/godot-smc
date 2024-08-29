@@ -4,6 +4,7 @@ var animator: AnimatorComponent
 var physics: PhysicsComponent
 var stats: StatsComponent
 var input: InputComponent
+var wall_detector: WallDetectorComponent
 
 func get_dependencies() -> Dictionary:
 	return {
@@ -11,6 +12,7 @@ func get_dependencies() -> Dictionary:
 		"PhysicsComponent": "physics",
 		"StatsComponent": "stats",
 		"InputComponent": "input",
+		"WallDetectorComponent": "wall_detector"
 	}
 
 func enter(_prev_state: StringName, params: Dictionary = {}):
@@ -35,6 +37,8 @@ func update(_delta: float):
 		transition_to("jump", {"alt": true})
 	if physics.body.is_on_floor():
 		transition_to("land")
+	if direction != 0 and wall_detector.touches(Vector2(-direction, 0)):
+		transition_to("wall_slide")
 
 func physics_update(_delta: float):
 	physics.update()

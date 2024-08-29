@@ -12,9 +12,11 @@ var animator: AnimatorComponent
 func get_dependencies() -> Dictionary:
 	return {"AnimatorComponent": "animator"}
 
-func apply_gravity():
-	body.velocity += body.up_direction * -gravity_force
-	body.velocity.clampf(-terminal_speed, terminal_speed)
+func apply_gravity(force = null, max_speed = null):
+	var _force = force if force is float else gravity_force
+	var _max_speed = max_speed if max_speed is float else terminal_speed
+	body.velocity += body.up_direction * -_force
+	body.velocity = body.velocity.clampf(-_max_speed, _max_speed)
 
 func update_flip():
 	if body.velocity.x < 0:

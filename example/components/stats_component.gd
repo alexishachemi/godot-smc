@@ -9,6 +9,7 @@ extends Component
 @export var max_speed: int
 @export var air_acceleration: int
 @export var air_max_speed: int
+@export var wall_jump_H_force: int
 @export_group("current")
 @export var jumps: int
 
