@@ -20,8 +20,15 @@ func _enter_tree():
 		preload("res://addons/smc/state_machine/state_machine.gd"),
 		preload("res://addons/smc/icons/icon_state_machine.png")
 	)
+	add_custom_type(
+		"StateLabel",
+		"Label",
+		preload("res://addons/smc/tools/state_label.gd"),
+		preload("res://addons/smc/icons/icon_state_label.png")
+	)
 
 func _exit_tree():
 	remove_custom_type("ComponentManager")
 	remove_custom_type("StateGroup")
 	remove_custom_type("StateMachine")
+	remove_custom_type("StateLabel")

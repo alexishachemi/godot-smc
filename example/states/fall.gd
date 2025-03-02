@@ -15,7 +15,9 @@ func get_dependencies() -> Dictionary:
 		"WallDetectorComponent": "wall_detector"
 	}
 
-func enter(_prev_state: StringName, params: Dictionary = {}):
+func enter(prev_state: StringName, params: Dictionary = {}):
+	if prev_state != "jump" and stats.jumps > 0:
+		stats.jumps -= 1
 	if params.get("alt", false):
 		animator.play("alt_fall")
 	else:

@@ -1,6 +1,7 @@
 @icon("res://addons/smc/icons/icon_state_machine.png")
 class_name StateMachine
 extends Node
+
 ## The main component of the FSM system
 ##
 ## Manages the states/state groups dependencies and automatically registers states.
@@ -13,9 +14,9 @@ signal state_changed(group_name: StringName, state_name: StringName)
 
 @export var component_manager: ComponentManager
 @export var initial_state: StringName
-@export var initial_params: Dictionary
+@export var initial_params: Dictionary[StringName, Variant]
 
-var internal_group: StateGroup = StateGroup.new()
+@onready var internal_group: StateGroup = StateGroup.new()
 var groups: Array[StateGroup]
 
 func _ready():

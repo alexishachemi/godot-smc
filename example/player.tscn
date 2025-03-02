@@ -1,27 +1,28 @@
-[gd_scene load_steps=68 format=3 uid="uid://b40vb5q4kvckd"]
+[gd_scene load_steps=69 format=3 uid="uid://b40vb5q4kvckd"]
 
 [ext_resource type="Texture2D" uid="uid://xkjsbirwqwja" path="res://example/sprites/player air spin 48x48.png" id="1_0r6n0"]
-[ext_resource type="Script" path="res://addons/smc/state_machine/state_machine.gd" id="1_jar21"]
-[ext_resource type="Script" path="res://addons/smc/component_manager/component_manager.gd" id="2_b38yy"]
+[ext_resource type="Script" uid="uid://c712gcd5pmmhy" path="res://addons/smc/state_machine/state_machine.gd" id="1_jar21"]
+[ext_resource type="Script" uid="uid://b3ofa8ojb6uy3" path="res://addons/smc/component_manager/component_manager.gd" id="2_b38yy"]
 [ext_resource type="Texture2D" uid="uid://oo8paenm5g7g" path="res://example/sprites/player jump 48x48.png" id="2_pgo3p"]
-[ext_resource type="Script" path="res://example/components/animator_component.gd" id="3_5kbpg"]
+[ext_resource type="Script" uid="uid://dvo8g880e6cj3" path="res://example/components/animator_component.gd" id="3_5kbpg"]
 [ext_resource type="Texture2D" uid="uid://dsl2tj2pq4j1k" path="res://example/sprites/Player Idle 48x48.png" id="3_hraqs"]
 [ext_resource type="Texture2D" uid="uid://c505vjxsdup0x" path="res://example/sprites/player land 48x48.png" id="4_hjo3w"]
 [ext_resource type="Texture2D" uid="uid://dvlrycjlil8ue" path="res://example/sprites/player run 48x48.png" id="5_8842k"]
 [ext_resource type="Texture2D" uid="uid://uo42aak2ueih" path="res://example/sprites/player wall land 48x48.png" id="6_2bfr5"]
-[ext_resource type="Script" path="res://example/ressources/wall_detector.gd" id="6_6b1jq"]
+[ext_resource type="Script" uid="uid://bklx63v2h8fiv" path="res://example/ressources/wall_detector.gd" id="6_6b1jq"]
 [ext_resource type="Texture2D" uid="uid://dm68y1bhfojsw" path="res://example/sprites/player wall slide 48x48.png" id="7_t1kmx"]
-[ext_resource type="Script" path="res://example/components/physics_component.gd" id="8_8csqj"]
-[ext_resource type="Script" path="res://example/components/input_component.gd" id="9_b06cs"]
-[ext_resource type="Script" path="res://example/states/idle.gd" id="10_gip77"]
-[ext_resource type="Script" path="res://example/components/stats_component.gd" id="10_tj3p2"]
-[ext_resource type="Script" path="res://example/components/wall_detector_component.gd" id="11_vra7y"]
-[ext_resource type="Script" path="res://example/states/run.gd" id="13_3k7vp"]
-[ext_resource type="Script" path="res://example/states/jump.gd" id="13_jk8jh"]
-[ext_resource type="Script" path="res://example/states/fall.gd" id="14_oees3"]
-[ext_resource type="Script" path="res://example/states/land.gd" id="16_bvkri"]
-[ext_resource type="Script" path="res://example/states/wall_land.gd" id="19_w2h4h"]
-[ext_resource type="Script" path="res://example/states/wall_slide.gd" id="22_taks6"]
+[ext_resource type="Script" uid="uid://b5pcx1bjv1pry" path="res://example/components/physics_component.gd" id="8_8csqj"]
+[ext_resource type="Script" uid="uid://c785yh6ee8onn" path="res://example/components/input_component.gd" id="9_b06cs"]
+[ext_resource type="Script" uid="uid://dn30an082n81q" path="res://example/states/idle.gd" id="10_gip77"]
+[ext_resource type="Script" uid="uid://bn1hxvb78vgew" path="res://example/components/stats_component.gd" id="10_tj3p2"]
+[ext_resource type="Script" uid="uid://no7ex8ncpus2" path="res://example/components/wall_detector_component.gd" id="11_vra7y"]
+[ext_resource type="Script" uid="uid://c3mqbcsjk6w3n" path="res://example/states/run.gd" id="13_3k7vp"]
+[ext_resource type="Script" uid="uid://dk33guetheawv" path="res://example/states/jump.gd" id="13_jk8jh"]
+[ext_resource type="Script" uid="uid://lrsjxwnnwn4e" path="res://example/states/fall.gd" id="14_oees3"]
+[ext_resource type="Script" uid="uid://c2qceaogn8nd6" path="res://example/states/land.gd" id="16_bvkri"]
+[ext_resource type="Script" uid="uid://btqaca5cj6m2d" path="res://example/states/wall_land.gd" id="19_w2h4h"]
+[ext_resource type="Script" uid="uid://bkt5tia52s2xt" path="res://example/states/wall_slide.gd" id="22_taks6"]
+[ext_resource type="Script" uid="uid://kr1356jrk8rd" path="res://addons/smc/tools/state_label.gd" id="23_g47x1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5rfm7"]
 size = Vector2(11, 24)
@@ -468,3 +469,13 @@ script = ExtResource("19_w2h4h")
 
 [node name="wall_slide" type="Node" parent="StateMachine"]
 script = ExtResource("22_taks6")
+
+[node name="StateLabel" type="Label" parent="."]
+offset_left = -93.0
+offset_top = -32.0
+offset_right = 93.0
+offset_bottom = -9.0
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("23_g47x1")
+metadata/_custom_type_script = "uid://kr1356jrk8rd"

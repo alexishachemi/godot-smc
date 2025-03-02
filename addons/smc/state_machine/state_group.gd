@@ -1,6 +1,7 @@
 @icon("res://addons/smc/icons/icon_state_group.png")
 class_name StateGroup
 extends Node
+
 ## A group of states
 ##
 ## State groups allow for basic behavioural separation within the state machine.
@@ -10,8 +11,10 @@ extends Node
 ## If the requested state is from a different group then the state making the request
 ## won't be changed and the requested state will be set active in its respective group. 
 
+signal state_changed(StringName)
+
 @export var initial_state: StringName = ""
-@export var initial_params: Dictionary = {}
+@export var initial_params: Dictionary[StringName, Variant] = {}
 
 var states: Array[State]
 var current_state: State : set = _set_current_state
@@ -48,6 +51,7 @@ func transition_to(state_name: StringName, params: Dictionary = {}) -> bool:
 				current_state._exit()
 			current_state = state
 			current_state._enter(_get_prev_state_name(), params)
+			state_changed.emit(state_name)
 			return true
 	return false
 

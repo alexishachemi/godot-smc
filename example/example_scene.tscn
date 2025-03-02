@@ -18,7 +18,7 @@ size = Vector2(403.5, 111.5)
 [node name="Example Scene" type="Node2D"]
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="."]
-position = Vector2(2350.45, 1653.24)
+position = Vector2(2297, 1655)
 scale = Vector2(9.14911, 2.01799)
 collision_layer = 2
 collision_mask = 0
@@ -34,7 +34,7 @@ scale = Vector2(0.0476188, 301.29)
 texture = SubResource("GradientTexture1D_xlbdr")
 
 [node name="StaticBody2D3" type="StaticBody2D" parent="."]
-position = Vector2(1168, 1656)
+position = Vector2(1226, 1650)
 scale = Vector2(9.14911, 2.01799)
 collision_layer = 2
 collision_mask = 0
