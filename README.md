@@ -24,6 +24,10 @@ This part lists the custom nodes that are added by the plugin and can be found i
 
 	Container for components, handle access from outside sources and the FSM as well as dependency resolving.
 
+- <img src="addons\smc\icons\icon_state_label.png" width="10"/> **StateLabel**
+
+	State display utility. Will automatically show the current state of a state machine/group.
+
 ## Scripts
 
 This part lists the scripts that are meant to be subclassed when creating custom nodes for the plugin.
