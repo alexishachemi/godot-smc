@@ -2,7 +2,7 @@
 
 A plugin that adds nodes and scripts for the implementation of finite state machines using the Composition design pattern.
 
-**Made for Godot 4.4**
+**Should work on Godot 4.3+**
 
 ## Installation
 

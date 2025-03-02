@@ -14,7 +14,7 @@ signal state_changed(group_name: StringName, state_name: StringName)
 
 @export var component_manager: ComponentManager
 @export var initial_state: StringName
-@export var initial_params: Dictionary[StringName, Variant]
+@export var initial_params: Dictionary
 
 @onready var internal_group: StateGroup = StateGroup.new()
 var groups: Array[StateGroup]

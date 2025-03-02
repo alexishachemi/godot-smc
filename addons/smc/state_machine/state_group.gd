@@ -14,7 +14,7 @@ extends Node
 signal state_changed(StringName)
 
 @export var initial_state: StringName = ""
-@export var initial_params: Dictionary[StringName, Variant] = {}
+@export var initial_params: Dictionary = {}
 
 var states: Array[State]
 var current_state: State : set = _set_current_state

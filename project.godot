@@ -12,7 +12,6 @@ config_version=5
 
 config/name="SMC"
 config/version="1.0"
-run/main_scene="res://example/example_scene.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://addons/smc/icons/icon_state_machine.png"
 
