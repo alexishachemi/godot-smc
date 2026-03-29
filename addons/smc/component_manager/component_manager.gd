@@ -1,63 +1,198 @@
 @icon("res://addons/smc/icons/icon_component_manager.png")
-class_name ComponentManager
+class_name SMCComponentManager
 extends Node
-## The node responsible for managing all components in a scene
+
+## Store and manages components [SMCComponent] nodes.
 ##
-## Manages dependencies and getting components from outside sources.
+## Component manager may be iterated like other containers:
+## [codeblock]
+## for component in component_manager:
+## 	...
+## [/codeblock]
 
-var components: Array[Component]
+## Emitted when a component is added
+signal component_added(component: SMCComponent)
+## Emitted when a component is removed
+signal component_removed(component: SMCComponent)
 
-func _ready():
-	reload_components()
+## Wether to call [method reload_components_from_children] when the manager 
+## enters the scene tree.
+@export var reload_components_on_start: bool = true
 
-func get_component(comp_name: StringName) -> Component:
-	for comp in components:
-		if comp.name == comp_name:
-			return comp
-	return null
+var _components: Dictionary[StringName, SMCComponent]
 
-## https://stackoverflow.com/questions/76313724/check-if-an-object-is-of-a-class-given-the-class-name-in-string
-static func is_instance_of_string(obj: Object, given_class_name: String) -> bool:
-	if ClassDB.class_exists(given_class_name):
-		return obj.is_class(given_class_name)
+
+## Query a component from the manager using the given [param query].[br]
+## [param query] supports multiple types:[br]
+## - [String] (and [StringName]): The name of the component's [code]class_name[/code].
+## [codeblock]
+## manager.get_component("HealthComponent") # Valid
+## [/codeblock][br]
+## - [Script]: The class of the component.
+## [codeblock]
+## manager.get_component(HealthComponent) # Valid
+## [/codeblock][br]
+## [b]Note[/b]: It is only possible to query components that have a custom 
+## [code]class_name[/code]. Components extending [SMCComponent] without having
+## a custom [code]class_name[/code] will raise an error.
+## [codeblock]
+## manager.get_component(SMCComponent) # Error
+## [/codeblock]
+func get_component(query: Variant) -> SMCComponent:
+	var key: StringName = ""
+	if query is Script:
+		key = query.get_global_name()
+	elif query is String or query is StringName:
+		key = query
 	else:
-		var class_script : Script
-		if ResourceLoader.exists(given_class_name):
-			class_script = load(given_class_name) as Script
-		if class_script == null:
-			for x in ProjectSettings.get_global_class_list():
-				if str(x["class"]) == given_class_name:
-					class_script = load(str(x["path"]))
-					break
-		if class_script == null:
-			return false
-		var check_script : Script = obj.get_script()
-		while check_script != null:
-			if check_script == class_script:
-				return true
-			check_script = check_script.get_base_script()
+		assert(false, "Invalid query type. Expected class (Script) or string. Got %s" % query)
+	assert(
+		not key.is_empty() and key != "SMCComponent",
+		"Invalid query. Expected a subclass of SMCComponent with class_name or the name of such class."
+	)
+	return _components.get(key)
+
+
+## Adds [param component] to the manager. if [param resolve_dependencies] is 
+## [code]true[/code] (default), the manager will resolve its dependecies using
+## [method resolve_component_dependencies].
+## [br][br]
+## [b]Note[/b]: Changing the component registry at runtime will not update the
+## resolved dependencies of other components. You may need to use the
+## [signal component_added] signal along with 
+## [method resolve_component_dependencies] if you need to be able to change 
+## component dependecies at runtime.
+func add_component(component: SMCComponent, resolve_dependencies: bool = true) -> bool:
+	assert(component, "Failed to add component. Got null value.")
+	var script: Script = component.get_script()
+	assert(component, "Failed to add component. Missing script.")
+	var key: StringName = script.get_global_name()
+	assert(
+		not key.is_empty() and key != "SMCComponent",
+		"Failed to add component. Expected a subclass of SMCComponent."
+	)
+	if _components.has(key):
 		return false
+	_components[key] = component
+	if resolve_dependencies:
+		resolve_component_dependencies(component)
+	component_added.emit(component)
+	return true
 
-func get_component_by_class(comp_class_name: StringName) -> Component:
-	for comp in components:
-		if is_instance_of_string(comp, comp_class_name):
-			return comp
-	return null
 
-func _load_dependencies(comp: Component):
-	var dep_dict = comp.get_dependencies()
-	var dep_comp: Component
-	for dep_name in dep_dict:
-		dep_comp = get_component_by_class(dep_name)
-		if not dep_comp:
-			push_warning("component manager could not find dependency [%s] of component [%s]" \
-				% [dep_name, comp.name])
-		comp.set(dep_dict[dep_name], dep_comp)
+## Removes a component from the manager. The component won't be queryable and
+## won't be used for dependency management.
+## [br][br]
+## [param query] supports multiple types:[br]
+## - [String] (and [StringName]): The name of the component's [code]class_name[/code].
+## [codeblock]
+## manager.remove_component("HealthComponent") # Valid
+## [/codeblock][br]
+## - [Script]: The class of the component.
+## [codeblock]
+## manager.remove_component(HealthComponent) # Valid
+## [/codeblock][br]
+## - Reference to a component.
+## [codeblock]
+## var my_component: HealthComponent = manager.get_component(HealthComponent)
+## manager.remove_component(my_component) # Valid
+## [/codeblock][br]
+## [b]Note[/b]: It is only possible to remove components that have a custom 
+## [code]class_name[/code]. Components extending [SMCComponent] without having
+## a custom [code]class_name[/code] will raise an error.
+## [codeblock]
+## manager.remove_component(SMCComponent) # Error
+## [/codeblock]
+## [br][br]
+## [b]Note[/b]: Changing the component registry at runtime will not update the
+## resolved dependencies of other components. You may need to use the
+## [signal component_removed] signal along with 
+## [method resolve_component_dependencies] if you need to be able to change 
+## component dependecies at runtime.
+func remove_component(query: Variant) -> bool:
+	var key: StringName
+	if query is String or query is StringName:
+		key = query
+	elif query is Script:
+		key = query.get_global_name()
+	elif query is SMCComponent:
+		var script: Script = query.get_script()
+		assert(script, "Failed to remove component. Missing script.")
+		key = script.get_global_name()
+	else:
+		assert(
+			false, 
+			"Invalid query type. Expected SMCComponent , Class (Script) or string. Got %s" % query
+		)
+	assert(
+		not key.is_empty() and key != "SMCComponent",
+		"Failed to remove component. Expected a subclass of SMCComponent."
+	)
+	var component: SMCComponent = _components.get(key)
+	if component:
+		_components.erase(key)
+		component_removed.emit(component)
+		return true
+	return false
 
-func reload_components():
-	components = []
-	for node in get_children():
-		if node is Component:
-			components.append(node)
-	for comp in components:
-		_load_dependencies(comp)
+
+## Clear all components from the manager and if [code]free_components[/code]
+## is [code]true[/code], calls [Node.queue_free] on them.[br]
+## If not freed, components that are still children of the manager can
+## be re-added using [method reload_components_from_children]
+func clear_components(free_components: bool = false) -> void:
+	if _components.is_empty():
+		return
+	var removed: Array[SMCComponent]
+	removed.assign(_components.values().duplicate())
+	_components.clear()
+	for component in removed:
+		component_removed.emit(component)
+		if free_components:
+			component.queue_free()
+
+
+## Clears all components from the manager then add them from its children.
+## See also [method add_component].
+func reload_components_from_children(resolve_dependencies: bool = true) -> void:
+	clear_components()
+	for component in get_children():
+		if component is SMCComponent:
+			var result: bool = add_component(component, false)
+			assert(result, "Failed to add component. duplicate component %s" % component)
+	if resolve_dependencies:
+		for component: SMCComponent in _components.values():
+			resolve_component_dependencies(component)
+
+
+## Resolve a component's dependencies by retrieving said dependecies 
+## (see [method SMCComponent.get_dependencies]) and setting the appropriate 
+## properties to components that it manages. If a component needed to resolve a 
+## dependency is not present in the manager, crashes the program.
+func resolve_component_dependencies(component: SMCComponent) -> void:
+	var dependencies: Dictionary[StringName, StringName] = component.get_dependencies()
+	for property in dependencies:
+		var query: StringName = dependencies[property]
+		var dep: SMCComponent = get_component(query)
+		assert(dep, "Missing dependency %s of component %s" % [query, component])
+		component.set(property, dep)
+
+
+func _enter_tree() -> void:
+	reload_components_from_children()
+
+
+func _iter_init(iter: Array) -> bool:
+	if _components.is_empty():
+		return false
+	iter[0] = _components.values()
+	return true
+
+
+func _iter_next(iter: Array) -> bool:
+	iter[0].pop_front()
+	return not iter[0].is_empty()
+
+
+func _iter_get(iter: Variant) -> Variant:
+	return iter.front()
