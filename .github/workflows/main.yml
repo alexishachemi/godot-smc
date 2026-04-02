@@ -1,0 +1,54 @@
+name: Addon Release
+
+on:
+    workflow_dispatch:
+
+env:
+    ADDON_NAME: smc
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Find plugin.cfg file
+              run: |
+                  PLUGIN_CFG=addons/$ADDON_NAME/plugin.cfg
+                  if [ -z "$PLUGIN_CFG" ]; then
+                    echo "Missing plugin config \"addons/$ADDON_NAME/plugin.cfg\""
+                    exit 1
+                  fi
+                  echo "PLUGIN_CFG=$PLUGIN_CFG" >> $GITHUB_ENV
+
+            - name: Read version from plugin.cfg
+              run: |
+                  VERSION=$(grep -oP '^version="\K[^"]+' "$PLUGIN_CFG")
+                  if [ -z "$VERSION" ]; then
+                    echo "Missing version"
+                    exit 1
+                  fi
+                  echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
+
+            - name: Ensure release version does not exist
+              run: |
+                  RELEASE_EXISTS=$(gh release list --limit 100 | grep -w "$RELEASE_VERSION" || true)
+                  if [ -n "$RELEASE_EXISTS" ]; then
+                    echo "Release $RELEASE_VERSION already exists"
+                    exit 1
+                  fi
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Zip folder
+              run: zip -r $ADDON_NAME.zip addons/$ADDON_NAME script_templates
+
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: ${{ env.RELEASE_VERSION }}
+                  name: Release ${{ env.RELEASE_VERSION }}
+                  files: addons.zip
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
