@@ -78,7 +78,6 @@ extends Node
 ## 	...
 ## [/codeblock]
 
-
 ## Custom [enum PropertyHint] used to flag component exports as dependencies.[br]
 ## These dependencies will be set automatically by the component manager owning 
 ## this component. [br]
@@ -89,15 +88,3 @@ extends Node
 const PROPERTY_HINT_COMPONENT: int = PROPERTY_HINT_MAX + _PROPERTY_HINT_MAGIC
 
 const _PROPERTY_HINT_MAGIC: int = 193469992
-
-## Returns a list of properties that have the [constant PROPERTY_HINT_COMPONENT]
-## hint. The returned dictionary is composed of entries where the key is the
-## name of the property and the value is the name of the component class (e.g.
-## [code]"my_property": "MyComponent"[/code]). The component class can be used
-## as a query for [method SMCComponentManager.get_component].
-func get_dependencies() -> Dictionary[StringName, StringName]:
-	var deps: Dictionary[StringName, StringName] = {}
-	for property in get_property_list():
-		if property.hint == PROPERTY_HINT_COMPONENT:
-			deps[property.name] = property.class_name
-	return deps

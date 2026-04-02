@@ -1,16 +1,16 @@
-extends State
+extends SMCState
 
-func get_dependencies() -> Dictionary[StringName, StringName]:
-	return {}
-
-func enter(prev_state: StringName, params: Dictionary[StringName, Variant] = {}):
+func _enter(previous_state: StringName, args: Dictionary[StringName, Variant]) -> void:
 	pass
 
-func exit():
+
+func _exit(next_state: StringName, next_state_args: Dictionary[StringName, Variant]) -> void:
 	pass
 
-func update(_delta: float):
+
+func _process(delta: float) -> void:
 	pass
 
-func physics_update(_delta: float):
+
+func _physics_process(delta: float) -> void:
 	pass

@@ -23,7 +23,8 @@ config/icon="res://addons/smc/icons/icon_state_machine.png"
 
 gdscript/warnings/directory_rules={
 "res://addons": 0,
-"res://addons/smc": 1
+"res://addons/smc": 1,
+"res://script_templates": 0
 }
 gdscript/warnings/untyped_declaration=1
 

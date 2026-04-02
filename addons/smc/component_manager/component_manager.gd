@@ -62,7 +62,7 @@ func get_component(query: Variant) -> SMCComponent:
 ## [signal component_added] signal along with 
 ## [method resolve_component_dependencies] if you need to be able to change 
 ## component dependecies at runtime.
-func add_component(component: SMCComponent, resolve_dependencies: bool = true) -> bool:
+func add_component(component: SMCComponent, resolve_component_dependencies: bool = true) -> bool:
 	assert(component, "Failed to add component. Got null value.")
 	var script: Script = component.get_script()
 	assert(component, "Failed to add component. Missing script.")
@@ -74,8 +74,8 @@ func add_component(component: SMCComponent, resolve_dependencies: bool = true) -
 	if _components.has(key):
 		return false
 	_components[key] = component
-	if resolve_dependencies:
-		resolve_component_dependencies(component)
+	if resolve_component_dependencies:
+		resolve_dependencies(component)
 	component_added.emit(component)
 	return true
 
@@ -154,28 +154,36 @@ func clear_components(free_components: bool = false) -> void:
 
 ## Clears all components from the manager then add them from its children.
 ## See also [method add_component].
-func reload_components_from_children(resolve_dependencies: bool = true) -> void:
+func reload_components_from_children(resolve_components_dependencies: bool = true) -> void:
 	clear_components()
 	for component in get_children():
 		if component is SMCComponent:
 			var result: bool = add_component(component, false)
 			assert(result, "Failed to add component. duplicate component %s" % component)
-	if resolve_dependencies:
+	if resolve_components_dependencies:
 		for component: SMCComponent in _components.values():
-			resolve_component_dependencies(component)
+			resolve_dependencies(component)
 
 
-## Resolve a component's dependencies by retrieving said dependecies 
-## (see [method SMCComponent.get_dependencies]) and setting the appropriate 
-## properties to components that it manages. If a component needed to resolve a 
-## dependency is not present in the manager, crashes the program.
-func resolve_component_dependencies(component: SMCComponent) -> void:
-	var dependencies: Dictionary[StringName, StringName] = component.get_dependencies()
-	for property in dependencies:
-		var query: StringName = dependencies[property]
-		var dep: SMCComponent = get_component(query)
-		assert(dep, "Missing dependency %s of component %s" % [query, component])
-		component.set(property, dep)
+## Resolve the dependencies of a node by checking properties with the 
+## [constant SMCComponent.PROPERTY_HINT_COMPONENT] hint and setting the 
+## appropriate properties to components that it manages. If a component needed 
+## to resolve a dependency is not present in the manager, raises an error.[br][br]
+## See how to declare a component dependency below:
+## [codeblock]
+## @export_custom(PROPERTY_HINT_COMPONENT, "", 0) var health: HealthComponent
+## [/codeblock]
+func resolve_dependencies(node: Node) -> void:
+	for property in node.get_property_list():
+		if property.hint != SMCComponent.PROPERTY_HINT_COMPONENT:
+			continue
+		var component: SMCComponent = get_component(property.class_name)
+		assert(
+			component,
+			"Failed to resolve dependency of %s. Missing component %s" %
+			[node, property.class_name]
+		)
+		node.set(property.name, component)
 
 
 func _enter_tree() -> void:
