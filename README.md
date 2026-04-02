@@ -53,10 +53,10 @@ States and components can require other component to be present in the state mac
 @export_custom(PROPERTY_HINT_COMPONENT, "", 0) var ai: AIComponent
 
 func _ready() -> void:
-    # NOT usable in _ready
+	# NOT usable in _ready
 
 func _initialize() -> void:
-    # use health and ai here (or any other SMCState related callback)
+	# use health and ai here (or any other SMCState related callback)
 ```
 
 Properties marked with this hint will be set automatically by the state machine/component manager that manages the state/component. Generates an error when a state or component needs a specific component that is not present.
