@@ -42,13 +42,13 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Zip folder
-              run: zip -r $ADDON_NAME.zip addons/$ADDON_NAME script_templates
+              run: zip -r addon.zip addons/$ADDON_NAME script_templates
 
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2
               with:
                   tag_name: ${{ env.RELEASE_VERSION }}
                   name: Release ${{ env.RELEASE_VERSION }}
-                  files: $ADDON_NAME.zip
+                  files: addon.zip
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
