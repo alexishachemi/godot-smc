@@ -49,6 +49,6 @@ jobs:
               with:
                   tag_name: ${{ env.RELEASE_VERSION }}
                   name: Release ${{ env.RELEASE_VERSION }}
-                  files: addons.zip
+                  files: $ADDON_NAME.zip
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
