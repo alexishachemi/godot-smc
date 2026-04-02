@@ -1,5 +1,5 @@
 class_name StatsComponent
-extends Component
+extends SMCComponent
 
 @export var max_jumps: int
 @export_group("physics")
@@ -13,7 +13,7 @@ extends Component
 @export_group("current")
 @export var jumps: int
 
-func reset_stat(stat_name: StringName):
+func reset_stat(stat_name: StringName) -> void:
 	var max_name := "max_" + stat_name
 	if get(stat_name) != null and get(max_name) != null:
 		set(stat_name, get(max_name))

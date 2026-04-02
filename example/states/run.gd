@@ -1,25 +1,16 @@
-extends State
+extends SMCState
 
-var animator: AnimatorComponent
-var physics: PhysicsComponent
-var stats: StatsComponent
-var input: InputComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var animator: AnimatorComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var physics: PhysicsComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var stats: StatsComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var input: InputComponent
 
-func get_dependencies() -> Dictionary:
-	return {
-		"AnimatorComponent": "animator",
-		"PhysicsComponent": "physics",
-		"StatsComponent": "stats",
-		"InputComponent": "input",
-	}
 
-func enter(_prev_state: StringName, _params: Dictionary = {}):
-	pass
-
-func exit():
+func _exit(_next_state: StringName, _next_state_args: Dictionary[StringName, Variant]) -> void:
 	animator.stop()
 
-func update(_delta: float):
+
+func _process(_delta: float) -> void:
 	var direction: float = input.get_vector().x
 	if direction < 0:
 		direction = floor(direction)
@@ -38,5 +29,5 @@ func update(_delta: float):
 	if physics.body.velocity.y > 5:
 		transition_to("fall")
 
-func physics_update(_delta: float):
+func _physics_process(_delta: float) -> void:
 	physics.update()

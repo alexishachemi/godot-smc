@@ -1,32 +1,26 @@
-extends State
+extends SMCState
 
-var animator: AnimatorComponent
-var physics: PhysicsComponent
-var stats: StatsComponent
-var input: InputComponent
-var wall_detector: WallDetectorComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var animator: AnimatorComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var physics: PhysicsComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var stats: StatsComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var input: InputComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var wall_detector: WallDetectorComponent
 
 var touches_right: bool = false
 
-func get_dependencies() -> Dictionary:
-	return {
-		"AnimatorComponent": "animator",
-		"PhysicsComponent": "physics",
-		"StatsComponent": "stats",
-		"InputComponent": "input",
-		"WallDetectorComponent": "wall_detector"
-	}
 
-func enter(_prev_state: StringName, _params: Dictionary = {}):
+func _enter(_previous_state: StringName, _args: Dictionary[StringName, Variant]) -> void:
 	touches_right = wall_detector.touches(Vector2.RIGHT)
 	animator.animated_sprite.flip_h = touches_right
 	animator.play("wall_land")
 	stats.reset_stat("jumps")
 
-func exit():
+
+func _exit(_next_state: StringName, _next_state_args: Dictionary[StringName, Variant]) -> void:
 	animator.stop()
 
-func update(_delta: float):
+
+func _process(_delta: float) -> void:
 	var direction: int = 1 if touches_right else -1
 	var input_direction: int = ceil(input.get_vector().x)
 
@@ -45,5 +39,6 @@ func update(_delta: float):
 	elif physics.body.velocity.y > 5:
 		transition_to("wall_slide")
 
-func physics_update(_delta: float):
+
+func _physics_process(_delta: float) -> void:
 	physics.update()

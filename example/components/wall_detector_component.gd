@@ -1,11 +1,11 @@
 class_name WallDetectorComponent
-extends Component
+extends SMCComponent
 
 @export var detectors: Array[WallDetector]
 
 var detection_map: Dictionary
 
-func touches(dir = null) -> bool:
+func touches(dir: Variant = null) -> bool:
 	for d in detectors:
 		if d.direction == dir:
 			return d.enabled

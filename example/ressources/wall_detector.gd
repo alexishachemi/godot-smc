@@ -7,9 +7,9 @@ extends Node2D
 var enabled: bool = false
 var direction: Vector2
 
-func _ready():
-	area.body_entered.connect(func (_a): enabled = true)
-	area.body_exited.connect(func (_a): enabled = false)
+func _ready() -> void:
+	area.body_entered.connect(func (_a: Node2D) -> void: enabled = true)
+	area.body_exited.connect(func (_a: Node2D) -> void: enabled = false)
 	direction = str_to_direction(direction_str)
 
 static func str_to_direction(s: String) -> Vector2:

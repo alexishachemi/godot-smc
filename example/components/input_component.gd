@@ -1,5 +1,5 @@
 class_name InputComponent
-extends Component
+extends SMCComponent
 
 func get_vector() -> Vector2:
 	return Input.get_vector("left", "right", "up", "down")

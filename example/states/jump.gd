@@ -1,21 +1,13 @@
-extends State
+extends SMCState
 
-var animator: AnimatorComponent
-var physics: PhysicsComponent
-var stats: StatsComponent
-var input: InputComponent
-var wall_detector: WallDetectorComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var animator: AnimatorComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var physics: PhysicsComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var stats: StatsComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var input: InputComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var wall_detector: WallDetectorComponent
 
-func get_dependencies() -> Dictionary:
-	return {
-		"AnimatorComponent": "animator",
-		"PhysicsComponent": "physics",
-		"StatsComponent": "stats",
-		"InputComponent": "input",
-		"WallDetectorComponent": "wall_detector"
-	}
 
-func jump(alt: bool = false):
+func jump(alt: bool = false) -> void:
 	var anim_name: StringName = "alt_jump" if alt else "jump" 
 	var force: int = stats.alt_jump_force if alt else stats.jump_force
 	if stats.jumps <= 0:
@@ -24,13 +16,13 @@ func jump(alt: bool = false):
 	stats.jumps -= 1
 	animator.play(anim_name)
 
-func enter(_prev_state: StringName, params: Dictionary = {}):
-	jump(params.get("alt", false))
+func _enter(_previous_state: StringName, args: Dictionary[StringName, Variant]) -> void:
+	jump(args.get("alt", false))
 
-func exit():
+func _exit(_next_state: StringName, _next_state_args: Dictionary[StringName, Variant]) -> void:
 	animator.stop()
 
-func update(_delta: float):
+func _process(_delta: float) -> void:
 	var direction: float = input.get_vector().x
 	if direction < 0:
 		direction = floor(direction)
@@ -46,5 +38,5 @@ func update(_delta: float):
 	if direction != 0 and wall_detector.touches(Vector2(-direction, 0)):
 		transition_to("wall_land")
 
-func physics_update(_delta: float):
+func _physics_process(_delta: float) -> void:
 	physics.update()

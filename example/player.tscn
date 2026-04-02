@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=3 uid="uid://b40vb5q4kvckd"]
+[gd_scene format=3 uid="uid://b40vb5q4kvckd"]
 
 [ext_resource type="Texture2D" uid="uid://xkjsbirwqwja" path="res://example/sprites/player air spin 48x48.png" id="1_0r6n0"]
 [ext_resource type="Script" uid="uid://c712gcd5pmmhy" path="res://addons/smc/state_machine/state_machine.gd" id="1_jar21"]
@@ -22,7 +22,7 @@
 [ext_resource type="Script" uid="uid://c2qceaogn8nd6" path="res://example/states/land.gd" id="16_bvkri"]
 [ext_resource type="Script" uid="uid://btqaca5cj6m2d" path="res://example/states/wall_land.gd" id="19_w2h4h"]
 [ext_resource type="Script" uid="uid://bkt5tia52s2xt" path="res://example/states/wall_slide.gd" id="22_taks6"]
-[ext_resource type="Script" uid="uid://kr1356jrk8rd" path="res://addons/smc/tools/state_label.gd" id="23_g47x1"]
+[ext_resource type="Script" uid="uid://kr1356jrk8rd" path="res://addons/smc/utils/state_label.gd" id="23_g47x1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5rfm7"]
 size = Vector2(11, 24)
@@ -372,63 +372,63 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_k8o2q"]
 radius = 1.0
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" unique_id=93504645]
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=42141180]
 position = Vector2(-0.5, 3)
 shape = SubResource("RectangleShape2D_5rfm7")
 
-[node name="AnimatedSprite" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=988740073]
 position = Vector2(0, -1)
 sprite_frames = SubResource("SpriteFrames_bqbpv")
 animation = &"wall_land"
 
-[node name="LeftWallDetector" type="Node2D" parent="." node_paths=PackedStringArray("area")]
+[node name="LeftWallDetector" type="Node2D" parent="." unique_id=1496741130 node_paths=PackedStringArray("area")]
 position = Vector2(8, 3)
 script = ExtResource("6_6b1jq")
 direction_str = "LEFT"
 area = NodePath("area")
 metadata/_edit_group_ = true
 
-[node name="area" type="Area2D" parent="LeftWallDetector"]
+[node name="area" type="Area2D" parent="LeftWallDetector" unique_id=1521276931]
 collision_layer = 0
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWallDetector/area"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWallDetector/area" unique_id=1576788241]
 shape = SubResource("CircleShape2D_k8o2q")
 
-[node name="RightWallDetector" type="Node2D" parent="." node_paths=PackedStringArray("area")]
+[node name="RightWallDetector" type="Node2D" parent="." unique_id=248385592 node_paths=PackedStringArray("area")]
 position = Vector2(-8, 3)
 script = ExtResource("6_6b1jq")
 direction_str = "RIGHT"
 area = NodePath("area")
 metadata/_edit_group_ = true
 
-[node name="area" type="Area2D" parent="RightWallDetector"]
+[node name="area" type="Area2D" parent="RightWallDetector" unique_id=767916792]
 collision_layer = 0
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWallDetector/area"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWallDetector/area" unique_id=173679665]
 shape = SubResource("CircleShape2D_k8o2q")
 
-[node name="ComponentManager" type="Node" parent="."]
+[node name="ComponentManager" type="Node" parent="." unique_id=986234583]
 script = ExtResource("2_b38yy")
 
-[node name="Animator" type="Node" parent="ComponentManager" node_paths=PackedStringArray("animated_sprite")]
+[node name="Animator" type="Node" parent="ComponentManager" unique_id=346078493 node_paths=PackedStringArray("animated_sprite")]
 script = ExtResource("3_5kbpg")
 animated_sprite = NodePath("../../AnimatedSprite")
 
-[node name="Physics" type="Node" parent="ComponentManager" node_paths=PackedStringArray("body")]
+[node name="Physics" type="Node" parent="ComponentManager" unique_id=2085844623 node_paths=PackedStringArray("body")]
 script = ExtResource("8_8csqj")
 body = NodePath("../..")
 gravity_force = 30.0
 deceleration = 30
 
-[node name="Input" type="Node" parent="ComponentManager"]
+[node name="Input" type="Node" parent="ComponentManager" unique_id=316496704]
 script = ExtResource("9_b06cs")
 
-[node name="Stats" type="Node" parent="ComponentManager"]
+[node name="Stats" type="Node" parent="ComponentManager" unique_id=1417659684]
 script = ExtResource("10_tj3p2")
 max_jumps = 2
 jump_force = 1000
@@ -440,37 +440,37 @@ air_max_speed = 400
 wall_jump_H_force = 400
 jumps = 2
 
-[node name="WallDetector" type="Node" parent="ComponentManager" node_paths=PackedStringArray("detectors")]
+[node name="WallDetector" type="Node" parent="ComponentManager" unique_id=1389134692 node_paths=PackedStringArray("detectors")]
 script = ExtResource("11_vra7y")
 detectors = [NodePath("../../LeftWallDetector"), NodePath("../../RightWallDetector")]
 
-[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("component_manager")]
+[node name="StateMachine" type="Node" parent="." unique_id=2014551567 node_paths=PackedStringArray("component_manager")]
 script = ExtResource("1_jar21")
 component_manager = NodePath("../ComponentManager")
 initial_state = &"idle"
 
-[node name="idle" type="Node" parent="StateMachine"]
+[node name="idle" type="Node" parent="StateMachine" unique_id=819461455]
 script = ExtResource("10_gip77")
 
-[node name="run" type="Node" parent="StateMachine"]
+[node name="run" type="Node" parent="StateMachine" unique_id=880550716]
 script = ExtResource("13_3k7vp")
 
-[node name="jump" type="Node" parent="StateMachine"]
+[node name="jump" type="Node" parent="StateMachine" unique_id=1922911857]
 script = ExtResource("13_jk8jh")
 
-[node name="fall" type="Node" parent="StateMachine"]
+[node name="fall" type="Node" parent="StateMachine" unique_id=940453971]
 script = ExtResource("14_oees3")
 
-[node name="land" type="Node" parent="StateMachine"]
+[node name="land" type="Node" parent="StateMachine" unique_id=90017214]
 script = ExtResource("16_bvkri")
 
-[node name="wall_land" type="Node" parent="StateMachine"]
+[node name="wall_land" type="Node" parent="StateMachine" unique_id=975310444]
 script = ExtResource("19_w2h4h")
 
-[node name="wall_slide" type="Node" parent="StateMachine"]
+[node name="wall_slide" type="Node" parent="StateMachine" unique_id=590178431]
 script = ExtResource("22_taks6")
 
-[node name="StateLabel" type="Label" parent="."]
+[node name="StateLabel" type="Label" parent="." unique_id=769698629]
 offset_left = -93.0
 offset_top = -32.0
 offset_right = 93.0
