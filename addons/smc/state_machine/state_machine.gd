@@ -1,5 +1,5 @@
 @tool
-@icon("res://addons/smc/icons/icon_state_machine.png")
+@icon("../icons/icon_state_machine.png")
 class_name SMCStateMachine
 extends Node
 

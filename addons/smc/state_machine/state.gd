@@ -1,4 +1,4 @@
-@icon("res://addons/smc/icons/icon_state.png")
+@icon("../icons/icon_state.png")
 class_name SMCState
 extends Node
 
