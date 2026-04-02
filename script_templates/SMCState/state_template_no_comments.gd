@@ -1,4 +1,12 @@
-extends SMCState
+# meta-name: Default without comments
+# meta-description: Base template for SMCState with default callbacks.
+
+extends _BASE_
+
+
+func _initialize():
+	pass
+
 
 func _enter(previous_state: StringName, args: Dictionary[StringName, Variant]) -> void:
 	pass

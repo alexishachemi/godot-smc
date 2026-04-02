@@ -1,2 +1,0 @@
-class_name __CLASS__Component
-extends __BASE__
