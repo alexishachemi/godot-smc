@@ -2,21 +2,30 @@
 class_name SMCState
 extends Node
 
-## A state managed by the state machine
+## A state managed by a [SMCStateGroup].
 ##
 ## States allows for isolated code to run under certain conditions.
 ## Only specific transition from one state to another may be done.
-## No state should share the same name within the same state machine
+## No state should share the same name within the same state group.
 
 #region Signals ----------------------------------------------------------------
 
 ## Emitted when a transition is requested to the overseeing [SMCStateMachine].
 ## (i.e. [method transition_to] is called)
 signal requested_transition(
-	state_group: StringName,
+	group_name: StringName,
 	state_name: StringName,
 	args: Dictionary[StringName, Variant],
 )
+
+#endregion
+#region Constant ---------------------------------------------------------------
+
+## Custom [enum PropertyHint] used to flag component exports as dependencies.[br]
+## These dependencies will be set automatically by the state group's component 
+## manager before [method _initialize] is called.
+## This is the same as using [constant SMCComponent.PROPERTY_HINT_COMPONENT].
+const PROPERTY_HINT_COMPONENT = SMCComponent.PROPERTY_HINT_COMPONENT
 
 #endregion
 #region Public Method ----------------------------------------------------------
