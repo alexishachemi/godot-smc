@@ -3,7 +3,7 @@
 class_name SMCStateGroup
 extends Node
 
-## A group of states
+## A group of states managed by a [SMCStateMachine]
 ##
 ## State groups allow for basic behavioural separation within the state machine.
 ## In each group, only one state can be active at a time. This allows for
@@ -22,7 +22,7 @@ signal state_removed(state: SMCState)
 signal current_state_changed(old: SMCState, new: SMCState)
 ## Emitted when a state requested a transition in another state group.
 signal requested_transition(
-	state_group: StringName,
+	group_name: StringName,
 	state_name: StringName,
 	args: Dictionary[StringName, Variant],
 )
@@ -164,14 +164,14 @@ func _validate_property(property: Dictionary) -> void:
 
 
 func _on_state_transition_requested(
-	state_group: StringName,
+	group_name: StringName,
 	state_name: StringName,
 	args: Dictionary[StringName, Variant]
 ) -> void:
-	if state_group.is_empty() or state_group == name:
+	if group_name.is_empty() or group_name == name:
 		transition_to(state_name, args)
 	else:
-		requested_transition.emit(state_group, state_name, args)
+		requested_transition.emit(group_name, state_name, args)
 
 #endregion
 #region Setters & Getters ------------------------------------------------------

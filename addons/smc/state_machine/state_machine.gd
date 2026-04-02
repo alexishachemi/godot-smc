@@ -63,19 +63,46 @@ var _show_internal_group_exports: bool = false
 #region Public Methods ---------------------------------------------------------
 
 
-## Changes the current state of the group to the one named [param state_name]. 
-## Only states present in this group are supported unlike
-## [method SMCState.transition_to].
-#func transition_to(
-	#state_name: StringName,
-	#group_name: StringName = "",
-	#args: Dictionary[StringName, Variant] = {}
-#) -> void:
-	#var group: SMCStateGroup
-	#if group_name.is_empty():
-		#group = _internal_group
-	#else:
-		#group = 
+## Changes a the state of a group according to [param path] with the given 
+## [param args]. The path should be either the state name if the state is
+## managed by the internal state group (i.e. the states were directly attached
+## to the state machine), or in the format <Group>/<State> (e.g. "Body/Idle").
+## See also [method transition_group_to].
+func transition_to(
+	path: StringName,
+	args: Dictionary[StringName, Variant] = {}
+) -> void:
+	var group_name: StringName
+	var state_name: StringName
+	var path_split: PackedStringArray = path.strip_edges().split("/", false)
+	var size: int = path_split.size()
+	if size == 1:
+		group_name = INTERNAL_STATE_GROUP_NAME
+		state_name = path_split[0]
+	elif size == 2:
+		group_name = path_split[0]
+		state_name = path_split[1]
+	else:
+		assert(false, "Failed to transition state. Invalid path")
+	transition_group_to(group_name, state_name, args)
+
+
+## Changes a the state of the group [param group_name] to be the state
+## [param state_name] passing [param args] in the transition. [br]
+## This method is called by [method transition_to] and its use should be
+## prefered when directly calling these methods from [SMCStateMachine] nodes.
+func transition_group_to(
+	group_name: StringName,
+	state_name: StringName,
+	args: Dictionary[StringName, Variant] = {}
+) -> void:
+	var group: SMCStateGroup = get_state_group(group_name)
+	assert(
+		group, 
+		"Failed to transition group %s to %s. Missing group." %
+		[group_name, state_name]
+	)
+	group.transition_to(state_name, args)
 
 
 ## Adds a state group to the state machine.
@@ -85,6 +112,7 @@ func add_state_group(group: SMCStateGroup) -> void:
 		return
 	_groups[group.name] = group
 	group.current_state_changed.connect(state_changed.emit.bind(group))
+	group.requested_transition.connect(transition_group_to)
 	group.component_manager = component_manager
 	group.initialize()
 	state_group_added.emit(group)
@@ -195,15 +223,18 @@ func _ready() -> void:
 	child_exiting_tree.connect(update_properties)
 	if Engine.is_editor_hint():
 		return
+	var use_internal: bool = false
 	for node in get_children():
 		if node is SMCState:
 			node.reparent(_internal_group)
+			use_internal = true
 	_internal_group.state_added.connect(state_added.emit)
 	_internal_group.state_removed.connect(state_removed.emit)
 	_internal_group.name = INTERNAL_STATE_GROUP_NAME
 	_internal_group.reload_states_on_start = reload_states_on_start
-	_internal_group.initial_state = initial_state
-	_internal_group.initial_args = initial_args
+	if use_internal:
+		_internal_group.initial_state = initial_state
+		_internal_group.initial_args = initial_args
 	add_child(_internal_group)
 	if reload_groups_on_start:
 		reload_state_groups_from_children()
