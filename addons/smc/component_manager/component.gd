@@ -88,3 +88,17 @@ extends Node
 const PROPERTY_HINT_COMPONENT: int = PROPERTY_HINT_MAX + _PROPERTY_HINT_MAGIC
 
 const _PROPERTY_HINT_MAGIC: int = 193469992
+
+
+## Query a component from [param node]. If the node has a component manager in 
+## its children, returns the component found with with [param query]. 
+## If [param node] is not a valid instance or the component was not found, 
+## return [code]null[/code]. See [method SMCComponentManager.get_component]
+## for what counts as a valid query.
+static func from_node(node: Node, query: Variant) -> SMCComponent:
+	if not is_instance_valid(node):
+		return null
+	for child in node.get_children():
+		if child is SMCComponentManager:
+			return child.get_component(query)
+	return null

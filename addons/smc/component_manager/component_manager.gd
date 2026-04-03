@@ -10,17 +10,27 @@ extends Node
 ## 	...
 ## [/codeblock]
 
+#region Signals ----------------------------------------------------------------
+
 ## Emitted when a component is added
 signal component_added(component: SMCComponent)
 ## Emitted when a component is removed
 signal component_removed(component: SMCComponent)
 
+#endregion
+#region Constants --------------------------------------------------------------
+
 ## Wether to call [method reload_components_from_children] when the manager 
 ## enters the scene tree.
 @export var reload_components_on_start: bool = true
 
+#endregion
+#region Private Variables ------------------------------------------------------
+
 var _components: Dictionary[StringName, SMCComponent]
 
+#endregion
+#region Public Methods ---------------------------------------------------------
 
 ## Query a component from the manager using the given [param query].[br]
 ## [param query] supports multiple types:[br]
@@ -185,6 +195,21 @@ func resolve_dependencies(node: Node) -> void:
 		)
 		node.set(property.name, component)
 
+#endregion
+#region Static Methods ---------------------------------------------------------
+
+## Finds a [SMCComponentManager] from [param node]'s children. Returns it if
+## found. Otherwise, returns [code]null[/code].
+static func from_node(node: Node) -> SMCComponentManager:
+	if not is_instance_valid(node):
+		return null
+	for child in node.get_children():
+		if child is SMCComponentManager:
+			return child
+	return null
+
+#endregion
+#region Private Methods --------------------------------------------------------
 
 func _enter_tree() -> void:
 	reload_components_from_children()
@@ -204,3 +229,5 @@ func _iter_next(iter: Array) -> bool:
 
 func _iter_get(iter: Variant) -> Variant:
 	return iter.front()
+
+#endregion
