@@ -1,4 +1,4 @@
-@icon("../icons/icon_component.png")
+@icon("../icons/component.png")
 @abstract
 class_name SMCComponent 
 extends Node

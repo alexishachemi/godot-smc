@@ -1,5 +1,5 @@
 @tool
-@icon("../icons/icon_state_group.png")
+@icon("../icons/state_group.png")
 class_name SMCStateGroup
 extends Node
 

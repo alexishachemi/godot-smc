@@ -1,4 +1,4 @@
-@icon("../icons/icon_state_label.png")
+@icon("../icons/state_label.png")
 class_name SMCStateLabel
 extends Label
 

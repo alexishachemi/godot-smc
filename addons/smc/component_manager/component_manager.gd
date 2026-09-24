@@ -1,4 +1,4 @@
-@icon("../icons/icon_component_manager.png")
+@icon("../icons/component_manager.png")
 class_name SMCComponentManager
 extends Node
 

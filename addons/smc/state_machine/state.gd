@@ -1,4 +1,4 @@
-@icon("../icons/icon_state.png")
+@icon("../icons/state.png")
 class_name SMCState
 extends Node
 

@@ -1,3 +1,4 @@
+@icon("../icons/service_manager.png")
 class_name SMCServiceManager
 extends Node
 
