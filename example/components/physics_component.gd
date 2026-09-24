@@ -7,7 +7,8 @@ extends SMCComponent
 @export var terminal_speed: float = 1000.0
 @export var deceleration: int = 1
 
-@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var animator: AnimatorComponent
+@export_custom(PROPERTY_HINT_COMPONENT, "", PROPERTY_USAGE_COMPONENT)
+var animator: AnimatorComponent
 
 func get_dependencies() -> Dictionary:
 	return {"AnimatorComponent": "animator"}

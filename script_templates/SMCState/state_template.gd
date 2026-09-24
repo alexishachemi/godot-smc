@@ -7,7 +7,7 @@ extends _BASE_
 
 # Define component dependencies like follows:
 #
-# @export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", 0)
+# @export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
 # var my_component: MyComponent 
 #
 

@@ -31,14 +31,16 @@ extends Node
 ## that flags an exported variable as a component dependency. Such values will
 ## be resolved automatically by the [SMCComponentManager]:
 ## [codeblock]
-## @export_custom(PROPERTY_HINT_COMPONENT, "", 0) var health: HealthComponent
+## @export_custom(PROPERTY_HINT_COMPONENT, "", PROPERTY_USAGE_COMPONENT)
+## var health: HealthComponent
 ## [/codeblock][br]
 ## With that line, you can then use [param health] as is in your code, the
 ## component manager will take care of setting the value before the component
 ## is ready, handling error handling as well.
 ## [br][br]
-## [b]Note[/b]: The property usage should be set to [code]0[/code] like in the
-## example. Since the value will be set automatically by the component manager,
+## [b]Note[/b]: [constant PROPERTY_USAGE_COMPONENT] is not necessary but it 
+## hides the property from the inspector, cleaning the panel.
+## Since the value will be set automatically by the component manager,
 ## we don't need to show it in the editor or serialize it with the scene.
 ## [br][br]
 ## [b]Usage Example[/b]:
@@ -65,7 +67,7 @@ extends Node
 ##
 ## signal damaged
 ##
-## @export_custom(PROPERTY_HINT_COMPONENT, "", 0) 
+## @export_custom(PROPERTY_HINT_COMPONENT, "", PROPERTY_USAGE_COMPONENT) 
 ## var health: HealthComponent
 ##
 ## func _ready() -> void:
@@ -83,9 +85,22 @@ extends Node
 ## this component. [br]
 ## [b]Example[/b]:
 ## [codeblock]
-## @export_custom(PROPERTY_HINT_COMPONENT, "", 0) var health: HealthComponent
+## @export_custom(PROPERTY_HINT_COMPONENT, "", PROPERTY_USAGE_COMPONENT)
+## var health: HealthComponent
 ## [/codeblock]
 const PROPERTY_HINT_COMPONENT: int = PROPERTY_HINT_MAX + _PROPERTY_HINT_MAGIC
+
+## Custom [enum PropertyUsage] used to flag component exports as dependencies.[br]
+## These dependencies will be set automatically by the component manager owning 
+## this component. [br]
+## [b]Example[/b]:
+## [codeblock]
+## @export_custom(PROPERTY_HINT_COMPONENT, "", PROPERTY_USAGE_COMPONENT)
+## var health: HealthComponent
+## [/codeblock]
+## Note: This [enum PropertyUsage] flag is optional, but prevents the property 
+## from showing in the editor.
+const PROPERTY_USAGE_COMPONENT: int = PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_SCRIPT_VARIABLE
 
 const _PROPERTY_HINT_MAGIC: int = 193469992
 

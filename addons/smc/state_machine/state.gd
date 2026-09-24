@@ -19,15 +19,6 @@ signal requested_transition(
 )
 
 #endregion
-#region Constant ---------------------------------------------------------------
-
-## Custom [enum PropertyHint] used to flag component exports as dependencies.[br]
-## These dependencies will be set automatically by the state group's component 
-## manager before [method _initialize] is called.
-## This is the same as using [constant SMCComponent.PROPERTY_HINT_COMPONENT].
-const PROPERTY_HINT_COMPONENT = SMCComponent.PROPERTY_HINT_COMPONENT
-
-#endregion
 #region Public Method ----------------------------------------------------------
 
 ## Initializes the state. This method is called after the state is ready but

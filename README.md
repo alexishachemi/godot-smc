@@ -49,8 +49,10 @@ This part lists the scripts that are meant to be subclassed when creating custom
 States and components can require other component to be present in the state machine to function. The state machine and component manager can handle dependency management automatically when using the custom property hint _PROPERTY_HINT_COMPONENT_:
 
 ```gdscript
-@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var health: HealthComponent
-@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var ai: AIComponent
+@export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
+var health: HealthComponent
+@export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
+var ai: AIComponent
 
 func _ready() -> void:
 	# NOT usable in _ready

@@ -1,10 +1,15 @@
 extends SMCState
 
-@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var animator: AnimatorComponent
-@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var physics: PhysicsComponent
-@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var stats: StatsComponent
-@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var input: InputComponent
-@export_custom(PROPERTY_HINT_COMPONENT, "", 0) var wall_detector: WallDetectorComponent
+@export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
+var animator: AnimatorComponent
+@export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
+var physics: PhysicsComponent
+@export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
+var stats: StatsComponent
+@export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
+var input: InputComponent
+@export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
+var wall_detector: WallDetectorComponent
 
 
 func jump(alt: bool = false) -> void:

@@ -181,7 +181,8 @@ func reload_components_from_children(resolve_components_dependencies: bool = tru
 ## to resolve a dependency is not present in the manager, raises an error.[br][br]
 ## See how to declare a component dependency below:
 ## [codeblock]
-## @export_custom(PROPERTY_HINT_COMPONENT, "", 0) var health: HealthComponent
+## @export_custom(PROPERTY_HINT_COMPONENT, "", PROPERTY_USAGE_COMPONENT)
+## var health: HealthComponent
 ## [/codeblock]
 func resolve_dependencies(node: Node) -> void:
 	for property in node.get_property_list():
