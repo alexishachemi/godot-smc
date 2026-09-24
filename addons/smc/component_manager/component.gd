@@ -102,7 +102,7 @@ const PROPERTY_HINT_COMPONENT: int = PROPERTY_HINT_MAX + _PROPERTY_HINT_MAGIC
 ## from showing in the editor.
 const PROPERTY_USAGE_COMPONENT: int = PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_SCRIPT_VARIABLE
 
-const _PROPERTY_HINT_MAGIC: int = 193469992
+const _PROPERTY_HINT_MAGIC: int = 1306
 
 
 ## Query a component from [param node]. If the node has a component manager in 
