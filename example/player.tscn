@@ -201,7 +201,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_qykrr")
 }],
-"loop": true,
+"loop": 1,
 "name": &"alt_fall",
 "speed": 5.0
 }, {
@@ -224,7 +224,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_k7uwy")
 }],
-"loop": false,
+"loop": 0,
 "name": &"alt_jump",
 "speed": 10.0
 }, {
@@ -235,7 +235,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_as04x")
 }],
-"loop": false,
+"loop": 0,
 "name": &"fall",
 "speed": 10.0
 }, {
@@ -270,7 +270,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_y4rny")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle",
 "speed": 10.0
 }, {
@@ -278,7 +278,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_y6fjt")
 }],
-"loop": false,
+"loop": 0,
 "name": &"jump",
 "speed": 10.0
 }, {
@@ -310,7 +310,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_g2esf")
 }],
-"loop": false,
+"loop": 0,
 "name": &"land",
 "speed": 20.0
 }, {
@@ -339,7 +339,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_7mjwp")
 }],
-"loop": true,
+"loop": 1,
 "name": &"run",
 "speed": 10.0
 }, {
@@ -350,7 +350,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_0sa5p")
 }],
-"loop": false,
+"loop": 0,
 "name": &"wall_land",
 "speed": 10.0
 }, {
@@ -364,7 +364,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_kg46y")
 }],
-"loop": false,
+"loop": 0,
 "name": &"wall_slide",
 "speed": 10.0
 }]
@@ -444,9 +444,8 @@ jumps = 2
 script = ExtResource("11_vra7y")
 detectors = [NodePath("../../LeftWallDetector"), NodePath("../../RightWallDetector")]
 
-[node name="StateMachine" type="Node" parent="." unique_id=2014551567 node_paths=PackedStringArray("component_manager")]
+[node name="StateMachine" type="Node" parent="." unique_id=2014551567]
 script = ExtResource("1_jar21")
-component_manager = NodePath("../ComponentManager")
 initial_state = &"idle"
 
 [node name="idle" type="Node" parent="StateMachine" unique_id=819461455]

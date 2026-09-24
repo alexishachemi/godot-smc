@@ -12,14 +12,23 @@ extends Node
 
 ## Emitted when a transition is requested to the overseeing [SMCStateMachine].
 ## (i.e. [method transition_to] is called)
-signal requested_transition(
+signal transition_requested(
 	group_name: StringName,
 	state_name: StringName,
 	args: Dictionary[StringName, Variant],
 )
 
 #endregion
+#region Built-in Method --------------------------------------------------------
+
+
+func _ready() -> void:
+	_set_enabled(false)
+
+
+#endregion
 #region Public Method ----------------------------------------------------------
+
 
 ## Initializes the state. This method is called after the state is ready but
 ## before it is entered (if the state is meant to be activated on start).
@@ -31,6 +40,7 @@ signal requested_transition(
 ## override the [method _initialize] method.
 func initialize() -> void:
 	_initialize()
+
 
 ## Activates the state. This effectively enables processing, physics 
 ## processing and input handling (i.e. [method Node._process], 
@@ -77,17 +87,15 @@ func transition_to(path: StringName, args: Dictionary[StringName, Variant] = {})
 	var path_split: PackedStringArray = path.strip_edges().split("/", false)
 	var size: int = path_split.size()
 	if size == 1:
-		requested_transition.emit("", path_split[0], args)
+		transition_requested.emit("", path_split[0], args)
 	elif size == 2:
-		requested_transition.emit(path_split[0], path_split[1], args)
+		transition_requested.emit(path_split[0], path_split[1], args)
 	else:
 		assert(false, "Failed to transition state. Invalid path")
 
+
 #endregion
 #region Private Method ---------------------------------------------------------
-
-func _ready() -> void:
-	_set_enabled(false)
 
 
 func _set_enabled(enabled: bool) -> void:
@@ -95,8 +103,10 @@ func _set_enabled(enabled: bool) -> void:
 	set_physics_process(enabled)
 	set_process_input(enabled)
 
+
 #endregion
 #region Overridable ------------------------------------------------------------
+
 
 ## Override this method to add custom behaviour when the state is initialized 
 ## (i.e. when [method initialize] is called).
@@ -119,5 +129,6 @@ func _enter(previous_state: StringName, args: Dictionary[StringName, Variant]) -
 @warning_ignore("unused_parameter")
 func _exit(next_state: StringName, next_state_args: Dictionary[StringName, Variant]) -> void:
 	pass
+
 
 #endregion
