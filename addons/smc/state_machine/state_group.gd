@@ -42,6 +42,8 @@ var _states: Dictionary[StringName, SMCState]
 var _current_state: SMCState
 var _component_manager: SMCComponentManager
 var _service_manager: SMCServiceManager
+var _transition_queue: Array[Array]
+var _transitioning: bool = false
 
 #endregion
 #region Built-in Methods -------------------------------------------------------
@@ -71,17 +73,13 @@ func _validate_property(property: Dictionary) -> void:
 ## Only states present in this group are supported unlike
 ## [method SMCState.transition_to].
 func transition_to(state_name: StringName, args: Dictionary[StringName, Variant] = {}) -> void:
-	var state: SMCState = _states.get(state_name)
-	assert(state, "Group %s failed to transition to %s. State not found." % [name, state_name])
-	var previous_state: SMCState = _current_state
-	if _current_state:
-		_current_state.exit(state_name, args)
-	_current_state = state
-	var previous_state_name: StringName = ""
-	if previous_state:
-		previous_state_name = previous_state.name
-	_current_state.enter(previous_state_name, args)
-	state_changed.emit(previous_state, _current_state)
+	_transition_queue.append([state_name, args])
+	if _transitioning:
+		return
+	_transitioning = true
+	while not _transition_queue.is_empty():
+		_transition.callv(_transition_queue.pop_front())
+	_transitioning = false
 
 
 ## Returns the state named [param state_name] present in the group or
@@ -154,5 +152,19 @@ func _set_initial_state(state_name: StringName) -> void:
 		state_name = names[0]
 	initial_state = state_name
 
+
+func _transition(state_name: StringName, args: Dictionary[StringName, Variant]) -> void:
+	var state: SMCState = _states.get(state_name)
+	assert(state, "Group %s failed to transition to %s. State not found." % [name, state_name])
+	
+	var previous_state: SMCState = _current_state
+	if _current_state:
+		_current_state.exit(state_name, args)
+	_current_state = state
+	var previous_state_name: StringName = ""
+	if previous_state:
+		previous_state_name = previous_state.name
+	_current_state.enter(previous_state_name, args)
+	state_changed.emit(previous_state, _current_state)
 
 #endregion
