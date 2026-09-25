@@ -100,7 +100,7 @@ const PROPERTY_HINT_COMPONENT: int = PROPERTY_HINT_MAX + _PROPERTY_HINT_MAGIC
 ## [/codeblock]
 ## Note: This [enum PropertyUsage] flag is optional, but prevents the property 
 ## from showing in the editor.
-const PROPERTY_USAGE_COMPONENT: int = PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_SCRIPT_VARIABLE
+const PROPERTY_USAGE_COMPONENT: int = PROPERTY_USAGE_SCRIPT_VARIABLE
 
 const _PROPERTY_HINT_MAGIC: int = 1306
 
