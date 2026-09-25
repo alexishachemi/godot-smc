@@ -55,6 +55,11 @@ func _enter_tree() -> void:
 	_parent = _find_parent()
 	_load_services_from_children()
 
+
+func _ready() -> void:
+	_resolve_dependencies()
+
+
 func _iter_init(iter: Array) -> bool:
 	if _services.is_empty():
 		return false
@@ -158,6 +163,9 @@ func _load_services_from_children() -> void:
 	for service in get_children():
 		if service is SMCService:
 			_add_service(service)
+
+
+func _resolve_dependencies() -> void:
 	for service: SMCService in _services.values():
 		resolve_dependencies(service)
 
