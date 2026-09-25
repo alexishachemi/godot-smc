@@ -13,14 +13,6 @@ extends Node
 #region Private Variables ------------------------------------------------------
 
 var _components: Dictionary[StringName, SMCComponent]
-var _service_manager: SMCServiceManager
-
-
-# Flags if we have already looked for a service manager.
-# This is so we search for it only the first time a component actually requires
-# it. If no component requires it, we never look for the nearest service 
-# manager since we do not need it.
-var _service_manager_searched: bool = false
 
 #endregion
 #region Static Methods ---------------------------------------------------------
@@ -92,35 +84,20 @@ func get_component(query: Variant) -> SMCComponent:
 
 
 ## Resolve the component and service dependencies of a node by checking
-## properties with the [constant SMCComponent.PROPERTY_HINT_COMPONENT] and 
-## [constant SMCService.PROPERTY_HINT_SERVICE] hints and setting the 
-## appropriate properties that it manages. If a component or service needed 
+## properties with the [constant SMCComponent.PROPERTY_HINT_COMPONENT] hint and 
+## setting the appropriate properties that it manages. If a component needed 
 ## to resolve a dependency is not present in the manager, raises an error.[br][br]
 func resolve_dependencies(node: Node) -> void:
 	for property in node.get_property_list():
-		match property.hint:
-			SMCComponent.PROPERTY_HINT_COMPONENT:
-				var component: SMCComponent = get_component(property.class_name)
-				assert(
-					component,
-					"Failed to resolve dependency of %s. Missing component %s" %
-					[node, property.class_name]
-				)
-				node.set(property.name, component)
-			SMCService.PROPERTY_HINT_SERVICE:
-				var service_manager: SMCServiceManager = _get_service_manager()
-				assert(
-					service_manager,
-					"Failed to resolve dependency of %s. Missing service manager" %
-					node
-				)
-				var service: SMCService = _service_manager.get_service(property.class_name)
-				assert(
-					service,
-					"Failed to resolve dependency of %s. Missing service %s" %
-					[node, property.class_name]
-				)
-				node.set(property.name, service)
+		if property.hint != SMCComponent.PROPERTY_HINT_COMPONENT:
+			continue
+		var component: SMCComponent = get_component(property.class_name)
+		assert(
+			component,
+			"Failed to resolve dependency of %s. Missing component %s" %
+			[node, property.class_name]
+		)
+		node.set(property.name, component)
 
 
 #endregion
@@ -144,18 +121,14 @@ func _add_component(component: SMCComponent) -> void:
 
 
 func _load_components_from_children() -> void:
+	var service_manager: SMCServiceManager = SMCServiceManager.find_nearest(get_parent())
 	for component in get_children():
 		if component is SMCComponent:
 			_add_component(component)
 	for component: SMCComponent in _components.values():
 		resolve_dependencies(component)
-
-
-func _get_service_manager() -> SMCServiceManager:
-	if not _service_manager_searched:
-		_service_manager = SMCServiceManager.find_nearest(get_parent())
-		_service_manager_searched = true
-	return _service_manager
+		if service_manager:
+			service_manager.resolve_dependencies(component)
 
 
 #endregion

@@ -41,6 +41,7 @@ signal transition_requested(
 var _states: Dictionary[StringName, SMCState]
 var _current_state: SMCState
 var _component_manager: SMCComponentManager
+var _service_manager: SMCServiceManager
 
 #endregion
 #region Built-in Methods -------------------------------------------------------
@@ -126,6 +127,8 @@ func _add_state(state: SMCState) -> void:
 	state.transition_requested.connect(_on_state_transition_requested)
 	if _component_manager:
 		_component_manager.resolve_dependencies(state)
+	if _service_manager:
+		_service_manager.resolve_dependencies(state)
 
 
 func _on_state_transition_requested(

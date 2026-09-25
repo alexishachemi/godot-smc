@@ -42,6 +42,7 @@ var _groups: Dictionary[StringName, SMCStateGroup]
 var _internal_group: SMCStateGroup = SMCStateGroup.new()
 var _show_internal_group_exports: bool = false
 var _component_manager: SMCComponentManager
+var _service_manager: SMCServiceManager
 
 #endregion
 #region Built-in Methods -------------------------------------------------------
@@ -66,6 +67,7 @@ func _ready() -> void:
 		_internal_group.initial_args = initial_args
 	add_child(_internal_group)
 	_component_manager = _find_component_manager()
+	_service_manager = _find_service_manager()
 	_load_state_groups_from_children()
 
 
@@ -186,6 +188,7 @@ func _add_state_group(group: SMCStateGroup) -> void:
 	group.state_changed.connect(state_changed.emit.bind(group))
 	group.transition_requested.connect(transition_group_to)
 	group._component_manager = _component_manager
+	group._service_manager = _service_manager
 
 
 func _load_state_groups_from_children() -> void:
@@ -198,6 +201,10 @@ func _load_state_groups_from_children() -> void:
 
 func _find_component_manager() -> SMCComponentManager:
 	return SMCComponentManager.from_node(get_parent())
+
+
+func _find_service_manager() -> SMCServiceManager:
+	return SMCServiceManager.find_nearest(get_parent())
 
 
 func _set_initial_state(state_name: StringName) -> void:
