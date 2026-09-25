@@ -1,18 +1,29 @@
 extends SMCState
+# Service
+
+@export_custom(SMCService.PROPERTY_HINT_SERVICE, "", SMCService.PROPERTY_USAGE_SERVICE)
+var audio: AudioService
+
+# Component
 
 @export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
 var animator: AnimatorComponent
+
 @export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
 var physics: PhysicsComponent
+
 @export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
 var stats: StatsComponent
+
 @export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
 var input: InputComponent
+
 @export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
 var wall_detector: WallDetectorComponent
 
 
 func jump(alt: bool = false) -> void:
+	audio.play(&"jump")
 	var anim_name: StringName = "alt_jump" if alt else "jump" 
 	var force: int = stats.alt_jump_force if alt else stats.jump_force
 	if stats.jumps <= 0:

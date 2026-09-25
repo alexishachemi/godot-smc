@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://bhwgro3yig5wl"]
 
+[ext_resource type="Script" uid="uid://dskg6ywoq2t3c" path="res://addons/smc/service/service_manager.gd" id="1_83u6r"]
 [ext_resource type="PackedScene" uid="uid://b40vb5q4kvckd" path="res://example/player.tscn" id="1_hvv1w"]
+[ext_resource type="Script" uid="uid://f3usoi7i8h3x" path="res://example/services/audio.gd" id="2_254le"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0uw12"]
 size = Vector2(12.2416, 292.062)
@@ -16,6 +18,14 @@ gradient = SubResource("Gradient_xs7ue")
 size = Vector2(403.5, 111.5)
 
 [node name="Example Scene" type="Node2D" unique_id=488641983]
+
+[node name="SMCServiceManager" type="Node" parent="." unique_id=622683496]
+script = ExtResource("1_83u6r")
+metadata/_custom_type_script = "uid://dskg6ywoq2t3c"
+
+[node name="AudioService" type="Node" parent="SMCServiceManager" unique_id=1100771957]
+script = ExtResource("2_254le")
+metadata/_custom_type_script = "uid://f3usoi7i8h3x"
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=2107060369]
 position = Vector2(2297, 1655)

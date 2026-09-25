@@ -1,16 +1,27 @@
 extends SMCState
 
+# Service
+
+@export_custom(SMCService.PROPERTY_HINT_SERVICE, "", SMCService.PROPERTY_USAGE_SERVICE)
+var audio: AudioService
+
+# Component
+
 @export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
 var animator: AnimatorComponent
+
 @export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
 var physics: PhysicsComponent
+
 @export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
 var stats: StatsComponent
+
 @export_custom(SMCComponent.PROPERTY_HINT_COMPONENT, "", SMCComponent.PROPERTY_USAGE_COMPONENT)
 var input: InputComponent
 
 
 func _enter(_previous_state: StringName, _args: Dictionary[StringName, Variant]) -> void:
+	audio.play(&"impact")
 	stats.reset_stat("jumps")
 	animator.play("land")
 
