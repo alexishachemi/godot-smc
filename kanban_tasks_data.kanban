@@ -10,20 +10,180 @@
 		{
 			"uuid": "363bdf17-d823-4366-84fe-56951361f227",
 			"title": "Todo",
-			"tasks": []
+			"tasks": [
+				"ccbcace9-92dd-4439-8bb6-67989960b05e",
+				"50bd786a-54a0-4a0f-983a-3646b654555d",
+				"346e1b18-d890-47bd-8b38-92c6f31ad37e",
+				"22db5637-88a0-423b-835e-56bc8b11f8e3",
+				"13cdde8c-d5d0-4737-bfe4-9b3ec8e43395",
+				"6a9958e2-f793-4469-8f2a-227925ac4315"
+			]
 		},
 		{
 			"uuid": "fbbf7fa3-74ff-4b7f-b04e-e3736d1350df",
 			"title": "Doing",
-			"tasks": []
+			"tasks": [
+				"412f463d-b552-4ee1-8a9b-445c432a0e8b"
+			]
 		},
 		{
 			"uuid": "7cfc7ab4-5759-4283-99b7-559dec033989",
 			"title": "Done",
-			"tasks": []
+			"tasks": [
+				"11dc847c-89ce-45c1-89cf-c68a4741f5ef",
+				"3d47e775-bfce-4420-9c44-4d43ed5a12c2"
+			]
 		}
 	],
-	"tasks": [],
+	"tasks": [
+		{
+			"uuid": "11dc847c-89ce-45c1-89cf-c68a4741f5ef",
+			"title": "Service manager runtime editing w/ signaling",
+			"description": "Services are not necesarily a child of the manager, children are only used when initially setting up.",
+			"category": "78e4a058-666a-4c0f-afae-9f1c4a637667",
+			"steps": [
+				{
+					"details": "Adding a service",
+					"done": true
+				},
+				{
+					"details": "Adding multiple services",
+					"done": true
+				},
+				{
+					"details": "Removing a service",
+					"done": true
+				},
+				{
+					"details": "Removing all services",
+					"done": true
+				},
+				{
+					"details": "Replacing services",
+					"done": true
+				}
+			]
+		},
+		{
+			"uuid": "3d47e775-bfce-4420-9c44-4d43ed5a12c2",
+			"title": "Component Manager runtime editing w/ signaling",
+			"description": "Components are not necesarily a child of the manager, children are only used when initially setting up.",
+			"category": "78e4a058-666a-4c0f-afae-9f1c4a637667",
+			"steps": [
+				{
+					"details": "Adding a component",
+					"done": true
+				},
+				{
+					"details": "Adding multiple components",
+					"done": true
+				},
+				{
+					"details": "Removing a component",
+					"done": true
+				},
+				{
+					"details": "Removing all components",
+					"done": true
+				},
+				{
+					"details": "Replacing components",
+					"done": true
+				}
+			]
+		},
+		{
+			"uuid": "50bd786a-54a0-4a0f-983a-3646b654555d",
+			"title": "Service manager inter dependencies sync",
+			"description": "Refresh services' inter dependencies when the manager is modified.",
+			"category": "78e4a058-666a-4c0f-afae-9f1c4a637667",
+			"steps": []
+		},
+		{
+			"uuid": "13cdde8c-d5d0-4737-bfe4-9b3ec8e43395",
+			"title": "FSM service sync",
+			"description": "Refresh states' service dependencies when service manager is modified.",
+			"category": "78e4a058-666a-4c0f-afae-9f1c4a637667",
+			"steps": []
+		},
+		{
+			"uuid": "6a9958e2-f793-4469-8f2a-227925ac4315",
+			"title": "FSM component manager sync",
+			"description": "Refresh states' component dependencies when component manager is modified",
+			"category": "78e4a058-666a-4c0f-afae-9f1c4a637667",
+			"steps": []
+		},
+		{
+			"uuid": "ccbcace9-92dd-4439-8bb6-67989960b05e",
+			"title": "State group runtime editing w/ signaling",
+			"description": "States are not necessarily children of a group. Children are only used to determine the inital setup.",
+			"category": "78e4a058-666a-4c0f-afae-9f1c4a637667",
+			"steps": [
+				{
+					"details": "Adding a state",
+					"done": false
+				},
+				{
+					"details": "Adding multiple states",
+					"done": false
+				},
+				{
+					"details": "Removing a state",
+					"done": false
+				},
+				{
+					"details": "Removing all states",
+					"done": false
+				},
+				{
+					"details": "Replacing states",
+					"done": false
+				}
+			]
+		},
+		{
+			"uuid": "412f463d-b552-4ee1-8a9b-445c432a0e8b",
+			"title": "State machine runtime editing w/ signaling",
+			"description": "Groups are not necessarily children of a machine. Children are only used to determine the inital setup.",
+			"category": "78e4a058-666a-4c0f-afae-9f1c4a637667",
+			"steps": [
+				{
+					"details": "Adding a group",
+					"done": false
+				},
+				{
+					"details": "Adding multiple groups",
+					"done": false
+				},
+				{
+					"details": "Removing a group",
+					"done": false
+				},
+				{
+					"details": "Removing all groups",
+					"done": false
+				},
+				{
+					"details": "Replacing groups",
+					"done": false
+				}
+			]
+		},
+		{
+			"uuid": "346e1b18-d890-47bd-8b38-92c6f31ad37e",
+			"title": "Component manager service sync",
+			"description": "Refresh components' service dependencies when service manager is modified.",
+			"category": "78e4a058-666a-4c0f-afae-9f1c4a637667",
+			"steps": []
+		},
+		{
+			"uuid": "22db5637-88a0-423b-835e-56bc8b11f8e3",
+			"title": "Component manager inter dependencies sync",
+			"description": "Refresh components' inter dependencies when the manager is modified.",
+			"category": "78e4a058-666a-4c0f-afae-9f1c4a637667",
+			"steps": []
+		}
+	],
 	"layout": {
 		"columns": [
 			[
