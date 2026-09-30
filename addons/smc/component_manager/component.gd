@@ -117,3 +117,13 @@ static func from_node(node: Node, query: Variant) -> SMCComponent:
 		if child is SMCComponentManager:
 			return child.get_component(query)
 	return null
+
+
+## Checks if a node exposes a component dependency using the
+## [constant PROPERTY_HINT_COMPONENT]. Returns [code]true[/code] if there is a
+## dependency, [code]false[/code] otherwise.
+static func has_dependency(node: Node) -> bool:
+	for property in node.get_property_list():
+		if property.hint == PROPERTY_HINT_COMPONENT:
+			return true
+	return false

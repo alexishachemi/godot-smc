@@ -71,3 +71,27 @@ const PROPERTY_HINT_SERVICE: int = PROPERTY_HINT_MAX + _PROPERTY_HINT_MAGIC
 const PROPERTY_USAGE_SERVICE: int = PROPERTY_USAGE_SCRIPT_VARIABLE
 
 const _PROPERTY_HINT_MAGIC: int = 1307
+
+
+## Query a service from [param node]. If the node has a service manager in 
+## its children, returns the service found with with [param query]. 
+## If [param node] is not a valid instance or the service was not found, 
+## return [code]null[/code]. See [method SMCServiceManager.get_service]
+## for what counts as a valid query.
+static func from_node(node: Node, query: Variant) -> SMCService:
+	if not is_instance_valid(node):
+		return null
+	for child in node.get_children():
+		if child is SMCServiceManager:
+			return child.get_service(query)
+	return null
+
+
+## Checks if a node exposes a service dependency using the
+## [constant PROPERTY_HINT_SERVICE]. Returns [code]true[/code] if there is a
+## dependency, [code]false[/code] otherwise.
+static func has_dependency(node: Node) -> bool:
+	for property in node.get_property_list():
+		if property.hint == PROPERTY_HINT_SERVICE:
+			return true
+	return false
