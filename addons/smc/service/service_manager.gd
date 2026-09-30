@@ -280,7 +280,7 @@ func _attach_service(service: SMCService, replace: bool) -> void:
 
 func _detach_service(query: Variant) -> void:
 	var key: StringName = _resolve_query(query)
-	assert(not key.is_empty(), "Failed to get service. Invalid query %s." % query)
+	assert(not key.is_empty(), "Failed to detach service. Invalid query %s." % query)
 	_services.erase(key)
 
 
