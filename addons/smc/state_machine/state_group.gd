@@ -49,10 +49,14 @@ var _transitioning: bool = false
 #region Built-in Methods -------------------------------------------------------
 
 
-func _ready() -> void:
+func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		child_entered_tree.connect(notify_property_list_changed)
 		child_exiting_tree.connect(notify_property_list_changed)
+		return
+	_load_states_from_children()
+	if not initial_state.is_empty():
+		transition_to(initial_state, initial_args)
 
 
 func _validate_property(property: Dictionary) -> void:
@@ -89,8 +93,10 @@ func get_state(state_name: StringName) -> SMCState:
 
 
 ## Returns an array containing all states managed by this group.
-func get_states() -> Array[SMCState]:
-	return _states.values()
+func get_all_states() -> Array[SMCState]:
+	var states: Array[SMCState]
+	states.assign(_states.values())
+	return states
 
 
 ## Returns the current active state or [code]null[/code] if there isn't any.
@@ -98,35 +104,103 @@ func get_current_state() -> SMCState:
 	return _current_state
 
 
+## Attaches [param state] to this group.
+## [br][br]
+## Causes an error if a state with the same name is already attached to the state group.
+## [br][br]
+## [b]See also[/b]: [method replace_state]
+func attach_state(state: SMCState) -> void:
+	_attach_state(state, false)
+
+
+## Attaches multiple states to this group.
+## [br][br]
+## Causes an error if the name of a state is the same as one already attached.
+func attach_states(states: Array[SMCState]) -> void:
+	for state in states:
+		_attach_state(state, false)
+
+
+## Detaches the state named [param state_name] from this group.
+## [br][br]
+## If no state with this name is attached to the group, does nothing.
+func detach_state(state_name: StringName) -> void:
+	_detach_state(state_name)
+
+
+## Detaches multiple states from this group.
+## [br][br]
+## Names not matching attached states are ignored.
+func detach_states(state_names: Array[StringName]) -> void:
+	for state_name in state_names:
+		_detach_state(state_name)
+
+
+## Detaches all groups from this machine.
+func detach_all_states() -> void:
+	for state_name in _states:
+		_detach_state(state_name)
+
+
+## Attaches [param state] to this group.
+## [br][br]
+## If a state of its type is already attached, it is instead replaced by
+## [param state].
+func replace_state(state: SMCState) -> void:
+	_attach_state(state, true)
+
+
+## Attaches multiple states to this group.
+## [br][br]
+## If any states has its type already attached, the already attached states
+## is replaced.
+func replace_states(states: Array[SMCState]) -> void:
+	for state in states:
+		_attach_state(state, false)
+
+
 #endregion
 #region Private Methods --------------------------------------------------------
 
 
-func _initialize() -> void:
-	_load_states_from_children()
-	if not initial_state.is_empty():
-		transition_to(initial_state, initial_args)
+func _attach_state(state: SMCState, replace: bool) -> void:
+	assert(is_instance_valid(state), "Failed to attach state. Invalid instance.")
+	if replace and _states.has(state.name):
+		_detach_state(state.name)
+	elif not replace:
+		assert(not _states.has(state.name), "Failed to attach state. Duplicate state %s." % state.name)
+	_states[state.name] = state
+	state.transition_requested.connect(transition_requested.emit)
+	_resolve_dependencies(state, true, true)
+
+
+func _detach_state(state_name: StringName) -> void:
+	var state: SMCState = _states.get(state_name)
+	if not state:
+		return
+	_states.erase(state_name)
+	state.transition_requested.disconnect(transition_requested.emit)
+
+
+func _resolve_dependencies(
+	state: SMCState,
+	resolve_components: bool,
+	resolve_services: bool
+) -> void:
+	if resolve_components and SMCComponent.has_dependency(state):
+		assert(_component_manager, "Cannot resolve component dependency. Missing component manager.")
+		_component_manager.resolve_dependencies(state)
+	if resolve_services and SMCService.has_dependency(state):
+		assert(_service_manager, "Cannot resolve service dependency. Missing service manager.")
+		_service_manager.resolve_dependencies(state)
 
 
 func _load_states_from_children() -> void:
 	for node in get_children():
 		if node is SMCState:
-			_add_state(node)
+			_attach_state(node, false)
 	for state: SMCState in _states.values():
 		state.initialize()
-
-
-func _add_state(state: SMCState) -> void:
-	assert(
-		not _states.has(state.name),
-		"Failed to add state. Duplicate state %s" % state.name
-	)
-	_states[state.name] = state
-	state.transition_requested.connect(_on_state_transition_requested)
-	if _component_manager:
-		_component_manager.resolve_dependencies(state)
-	if _service_manager:
-		_service_manager.resolve_dependencies(state)
 
 
 func _on_state_transition_requested(
@@ -156,7 +230,6 @@ func _set_initial_state(state_name: StringName) -> void:
 func _transition(state_name: StringName, args: Dictionary[StringName, Variant]) -> void:
 	var state: SMCState = _states.get(state_name)
 	assert(state, "Group %s failed to transition to %s. State not found." % [name, state_name])
-	
 	var previous_state: SMCState = _current_state
 	if _current_state:
 		_current_state.exit(state_name, args)
@@ -166,5 +239,6 @@ func _transition(state_name: StringName, args: Dictionary[StringName, Variant]) 
 		previous_state_name = previous_state.name
 	_current_state.enter(previous_state_name, args)
 	state_changed.emit(previous_state, _current_state)
+
 
 #endregion
