@@ -252,7 +252,7 @@ func _resolve_all_depensencies(
 func _update_component_manager() -> void:
 	_component_manager = SMCComponentManager.from_node(get_parent())
 	if _component_manager:
-		_component_manager.modified.connect(
+		_component_manager.dependency_chain_modified.connect(
 			_on_component_manager_modified, 
 			CONNECT_ONE_SHOT | CONNECT_DEFERRED
 		)
@@ -266,7 +266,7 @@ func _on_component_manager_modified() -> void:
 func _update_service_manager() -> void:
 	_service_manager = SMCServiceManager.find_nearest(get_parent())
 	if _service_manager:
-		_service_manager.modified.connect(
+		_service_manager.dependency_chain_modified.connect(
 			_on_service_manager_modified, 
 			CONNECT_ONE_SHOT | CONNECT_DEFERRED
 		)

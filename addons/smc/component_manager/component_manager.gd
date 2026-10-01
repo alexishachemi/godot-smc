@@ -297,7 +297,7 @@ func _resolve_all_dependencies(
 func _update_service_manager() -> void:
 	_service_manager = SMCServiceManager.find_nearest(get_parent())
 	if _service_manager:
-		_service_manager.modified.connect(
+		_service_manager.dependency_chain_modified.connect(
 			_on_service_manager_modified, 
 			CONNECT_ONE_SHOT | CONNECT_DEFERRED
 		)
