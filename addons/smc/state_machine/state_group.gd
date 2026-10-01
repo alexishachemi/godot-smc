@@ -182,6 +182,14 @@ func _detach_state(state_name: StringName) -> void:
 	state.transition_requested.disconnect(transition_requested.emit)
 
 
+func _resolve_all_dependencies(
+	resolve_components: bool,
+	resolve_services: bool
+) -> void:
+	for state: SMCState in _states.values():
+		_resolve_dependencies(state, resolve_components, resolve_services)
+
+
 func _resolve_dependencies(
 	state: SMCState,
 	resolve_components: bool,

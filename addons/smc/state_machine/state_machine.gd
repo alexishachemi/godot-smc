@@ -66,8 +66,8 @@ func _enter_tree() -> void:
 		_internal_group.initial_state = initial_state
 		_internal_group.initial_args = initial_args
 	add_child(_internal_group)
-	_component_manager = _find_component_manager()
-	_service_manager = _find_service_manager()
+	_update_component_manager()
+	_update_service_manager()
 	_load_state_groups_from_children()
 
 
@@ -241,12 +241,40 @@ func _load_state_groups_from_children() -> void:
 		group._initialize()
 
 
-func _find_component_manager() -> SMCComponentManager:
-	return SMCComponentManager.from_node(get_parent())
+func _resolve_all_depensencies(
+	resolve_components: bool,
+	resolve_services: bool
+) -> void:
+	for group: SMCStateGroup in _groups.values():
+		group._resolve_all_dependencies(resolve_components, resolve_services)
 
 
-func _find_service_manager() -> SMCServiceManager:
-	return SMCServiceManager.find_nearest(get_parent())
+func _update_component_manager() -> void:
+	_component_manager = SMCComponentManager.from_node(get_parent())
+	if _component_manager:
+		_component_manager.modified.connect(
+			_on_component_manager_modified, 
+			CONNECT_ONE_SHOT | CONNECT_DEFERRED
+		)
+
+
+func _on_component_manager_modified() -> void:
+	_update_component_manager()
+	_resolve_all_depensencies(true, false)
+
+
+func _update_service_manager() -> void:
+	_service_manager = SMCServiceManager.find_nearest(get_parent())
+	if _service_manager:
+		_service_manager.modified.connect(
+			_on_service_manager_modified, 
+			CONNECT_ONE_SHOT | CONNECT_DEFERRED
+		)
+
+
+func _on_service_manager_modified() -> void:
+	_update_service_manager()
+	_resolve_all_depensencies(false, true)
 
 
 func _set_initial_state(state_name: StringName) -> void:
