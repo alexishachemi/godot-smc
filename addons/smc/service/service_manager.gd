@@ -15,15 +15,15 @@ extends Node
 
 #region Signals ----------------------------------------------------------------
 
-## Emitted when an operation that affect the other SMC nodes depending on this
+## Emitted when an operation that affects the other SMC nodes depending on this
 ## one is made.[br][br]
-## For example, moving or deleting the manager would break the dependency chain.
-## This signal is then emitted, and SMC managers relying on it will update and 
-## recompute accordingly. [br][br]
+## For example, moving or deleting the manager would change the dependency 
+## chain. This signal is then emitted, and SMC managers relying on it will 
+## update and recompute accordingly. [br][br]
 ## Since emitting this signal can cause a lot of nodes to recompute, it is
 ## recommended to change services at runtime sparingly.[br][br]
 ## [b]Note[/b]: Said updates are made in the next frame.
-signal modified
+signal dependency_chain_modified
 
 #endregion
 #region Private Variables ------------------------------------------------------
@@ -68,8 +68,8 @@ static func find_nearest(node: Node) -> SMCServiceManager:
 
 
 func _enter_tree() -> void:
-	replacing_by.connect(modified.emit)
-	tree_exited.connect(modified.emit)
+	replacing_by.connect(dependency_chain_modified.emit)
+	tree_exited.connect(dependency_chain_modified.emit)
 	_update_parent()
 	_load_services_from_children()
 
@@ -139,8 +139,8 @@ func get_all_services() -> Array[SMCService]:
 ## [b]See also[/b]: [method replace_service]
 func attach_service(service: SMCService) -> void:
 	_attach_service(service, false)
-	_resolve_all_dependencies()
-	modified.emit()
+	_resolve_dependencies(service)
+	dependency_chain_modified.emit()
 
 
 ## Attaches multiple services to this manager.
@@ -153,8 +153,8 @@ func attach_service(service: SMCService) -> void:
 func attach_services(services: Array[SMCService]) -> void:
 	for service in services:
 		_attach_service(service, false)
-	_resolve_all_dependencies()
-	modified.emit()
+	for service in services:
+		_resolve_dependencies(service)
 
 
 ## Detaches a service from this manager.
@@ -173,7 +173,7 @@ func attach_services(services: Array[SMCService]) -> void:
 func detach_service(query: Variant) -> void:
 	_detach_service(query)
 	_resolve_all_dependencies()
-	modified.emit()
+	dependency_chain_modified.emit()
 
 
 ## Detaches multiple services from this manager.
@@ -193,7 +193,7 @@ func detach_services(queries: Array[Variant]) -> void:
 	for query: Variant in queries:
 		_detach_service(query)
 	_resolve_all_dependencies()
-	modified.emit()
+	dependency_chain_modified.emit()
 
 
 ## Detaches all services from this manager.
@@ -203,7 +203,7 @@ func detach_services(queries: Array[Variant]) -> void:
 func detach_all_services() -> void:
 	for query in _services:
 		_detach_service(query)
-	modified.emit()
+	dependency_chain_modified.emit()
 
 
 ## Attaches [param service] to this manager.
@@ -214,9 +214,11 @@ func detach_all_services() -> void:
 ## [param service] must be a valid sub-class of [SMCService], anything else will
 ## cause an error.
 func replace_service(service: SMCService) -> void:
-	_attach_service(service, true)
-	_resolve_all_dependencies()
-	modified.emit()
+	if _attach_service(service, true):
+		_resolve_all_dependencies()
+		dependency_chain_modified.emit()
+	else:
+		_resolve_dependencies(service)
 
 
 ## Attaches multiple services to this manager.
@@ -227,10 +229,16 @@ func replace_service(service: SMCService) -> void:
 ## Each service must be a valid sub-class of [SMCService], anything else will
 ## cause an error.
 func replace_services(services: Array[SMCService]) -> void:
+	var replaced: bool = false
 	for service in services:
-		_attach_service(service, true)
-	_resolve_all_dependencies()
-	modified.emit()
+		if _attach_service(service, true):
+			replaced = true
+	if replaced:
+		_resolve_all_dependencies()
+		dependency_chain_modified.emit()
+	else:
+		for service in services:
+			_resolve_dependencies(service)
 
 
 ## Resolve the dependencies of a node by checking properties with the 
@@ -265,17 +273,20 @@ func _get_service(key: StringName) -> SMCService:
 	return null
 
 
-func _attach_service(service: SMCService, replace: bool) -> void:
+func _attach_service(service: SMCService, replace: bool) -> bool:
 	assert(is_instance_valid(service), "Failed to attach service. Invalid instance.")
 	assert(service.get_script(), "Failed to attach service. Missing script.")
 	var key: StringName = service.get_script().get_global_name()
 	assert(not key.is_empty(), "Failed to attach service. Missing global name.")
 	assert(key != "SMCService", "Failed to attach service. Invalid global name.")
+	var replaced: bool = false
 	if replace and _services.has(key):
 		_detach_service(key)
+		replaced = true
 	elif not replace:
 		assert(not _services.has(key), "Failed to attach service. Duplicate service %s." % key)
 	_services[key] = service
+	return replaced
 
 
 func _detach_service(query: Variant) -> void:
@@ -299,10 +310,14 @@ func _load_services_from_children() -> void:
 			_attach_service(service, false)
 
 
+func _resolve_dependencies(service: SMCService) -> void:
+	if SMCService.has_dependency(service):
+		resolve_dependencies(service)
+
+
 func _resolve_all_dependencies() -> void:
 	for service: SMCService in _services.values():
-		if SMCService.has_dependency(service):
-			resolve_dependencies(service)
+		_resolve_dependencies(service)
 
 
 func _update_parent() -> void:
@@ -321,7 +336,7 @@ func _update_parent() -> void:
 func _on_parent_modified() -> void:
 	_update_parent()
 	_resolve_all_dependencies()
-	modified.emit()
+	dependency_chain_modified.emit()
 
 
 #endregion
