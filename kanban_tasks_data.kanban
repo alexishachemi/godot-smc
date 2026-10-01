@@ -11,7 +11,6 @@
 			"uuid": "363bdf17-d823-4366-84fe-56951361f227",
 			"title": "Todo",
 			"tasks": [
-				"ccbcace9-92dd-4439-8bb6-67989960b05e",
 				"50bd786a-54a0-4a0f-983a-3646b654555d",
 				"346e1b18-d890-47bd-8b38-92c6f31ad37e",
 				"22db5637-88a0-423b-835e-56bc8b11f8e3",
@@ -23,7 +22,7 @@
 			"uuid": "fbbf7fa3-74ff-4b7f-b04e-e3736d1350df",
 			"title": "Doing",
 			"tasks": [
-				"412f463d-b552-4ee1-8a9b-445c432a0e8b"
+				"ccbcace9-92dd-4439-8bb6-67989960b05e"
 			]
 		},
 		{
@@ -31,7 +30,8 @@
 			"title": "Done",
 			"tasks": [
 				"11dc847c-89ce-45c1-89cf-c68a4741f5ef",
-				"3d47e775-bfce-4420-9c44-4d43ed5a12c2"
+				"3d47e775-bfce-4420-9c44-4d43ed5a12c2",
+				"412f463d-b552-4ee1-8a9b-445c432a0e8b"
 			]
 		}
 	],
@@ -149,23 +149,23 @@
 			"steps": [
 				{
 					"details": "Adding a group",
-					"done": false
+					"done": true
 				},
 				{
 					"details": "Adding multiple groups",
-					"done": false
+					"done": true
 				},
 				{
 					"details": "Removing a group",
-					"done": false
+					"done": true
 				},
 				{
 					"details": "Removing all groups",
-					"done": false
+					"done": true
 				},
 				{
 					"details": "Replacing groups",
-					"done": false
+					"done": true
 				}
 			]
 		},

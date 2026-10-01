@@ -48,7 +48,7 @@ var _service_manager: SMCServiceManager
 #region Built-in Methods -------------------------------------------------------
 
 
-func _ready() -> void:
+func _enter_tree() -> void:
 	var update_properties: Callable = func(_x: Variant) -> void:
 		if Engine.is_editor_hint():
 			notify_property_list_changed()
@@ -144,57 +144,99 @@ func get_state_group(group_name: StringName) -> SMCStateGroup:
 	return _groups.get(group_name)
 
 
-## Returns all state groups registered to this state machine. This includes the 
-## internal state group which will have the name 
+## Returns all state groups registered to this state machine.
+## [br][br]
+## This includes the internal state group. Its name is the value of 
 ## [constant INTERNAL_STATE_GROUP_NAME].
-func get_state_groups() -> Array[SMCStateGroup]:
-	return _groups.values()
+func get_all_state_groups() -> Array[SMCStateGroup]:
+	var groups: Array[SMCStateGroup]
+	groups.assign(_groups.values())
+	return groups 
 
 
-##########################
-## Internal State Group ##
-##########################
+## Attaches [param group] to this machine.
+## [br][br]
+## Causes an error if a group with the same name is already attached to the state machine.
+## [br][br]
+## [b]See also[/b]: [method replace_group]
+func attach_group(group: SMCStateGroup) -> void:
+	_attach_group(group, false)
+	group._initialize()
 
 
-## Returns the state named [param state_name] present in the internal group or
-## [code]null[/code] if not found. See also [method SMCStateGroup.get_state].
-func get_state(state_name: StringName) -> SMCState:
-	return _internal_group.get_state(state_name)
+## Attaches multiple groups to this machine.
+## [br][br]
+## Causes an error if the name of a group is the same as one already attached.
+func attach_groups(groups: Array[SMCStateGroup]) -> void:
+	for group in groups:
+		_attach_group(group, false)
+		group._initialize()
 
 
-## Returns an array containing all states managed by the internal group.
-## See also [method SMCStateGroup.get_states].
-func get_states() -> Array[SMCState]:
-	return _internal_group.get_states()
+## Detaches the group named [param group_name] from this machine.
+## [br][br]
+## If no group with this name is attached to the machine, does nothing.
+func detach_group(group_name: StringName) -> void:
+	_detach_group(group_name)
 
 
-## Returns the current active state of the internal group 
-## or [code]null[/code] if there isn't any.
-## See also [method SMCStateGroup.get_current_state].
-func get_current_state() -> SMCState:
-	return _internal_group.get_current_state()
+## Detaches multiple groups from this machine.
+## [br][br]
+## Names not matching attached groups are ignored.
+func detach_groups(group_names: Array[StringName]) -> void:
+	for group_name in group_names:
+		_detach_group(group_name)
+
+
+## Detaches all groups from this machine.
+func detach_all_groups() -> void:
+	for group_name in _groups:
+		_detach_group(group_name)
+
+
+## Attaches [param group] to this machine.
+## [br][br]
+## If a group with the same name is already attached, replaces it.
+func replace_group(group: SMCStateGroup) -> void:
+	_attach_group(group, true)
+
+
+## Attaches multiple groups to this machine.
+## [br][br]
+## Replaces already attached groups with the same names.
+func replace_groups(groups: Array[SMCStateGroup]) -> void:
+	for group in groups:
+		_attach_group(group, true)
 
 
 #endregion
 #region Private Methods --------------------------------------------------------
 
 
-func _add_state_group(group: SMCStateGroup) -> void:
-	assert(
-		not _groups.has(group.name),
-		"Failed to add state group. Duplicate group %s" % group.name
-	)
+func _attach_group(group: SMCStateGroup, replace: bool) -> void:
+	assert(is_instance_valid(group), "Failed to attach group. Invalid instance.")
+	if replace and _groups.has(group.name):
+		detach_group(group.name)
+	elif not replace:
+		assert(not _groups.has(group.name), "Failed to attach group. Duplicate group %s." % group.name)
 	_groups[group.name] = group
 	group.state_changed.connect(state_changed.emit.bind(group))
 	group.transition_requested.connect(transition_group_to)
-	group._component_manager = _component_manager
-	group._service_manager = _service_manager
+
+
+func _detach_group(group_name: StringName) -> void:
+	var group: SMCStateGroup = _groups.get(group_name)
+	if not group:
+		return
+	_groups.erase(group_name)
+	group.state_changed.disconnect(state_changed.emit.bind(group))
+	group.transition_requested.disconnect(transition_group_to)
 
 
 func _load_state_groups_from_children() -> void:
 	for node in get_children():
 		if node is SMCStateGroup:
-			_add_state_group(node)
+			_attach_group(node, false)
 	for group: SMCStateGroup in _groups.values():
 		group._initialize()
 
