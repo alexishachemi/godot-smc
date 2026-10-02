@@ -25,6 +25,7 @@ func _enter(_previous_state: StringName, _args: Dictionary[StringName, Variant])
 	stats.reset_stat("jumps")
 	animator.play("land")
 
+
 func _exit(_next_state: StringName, _next_state_args: Dictionary[StringName, Variant]) -> void:
 	animator.stop()
 

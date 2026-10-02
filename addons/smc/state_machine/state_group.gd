@@ -54,9 +54,6 @@ func _enter_tree() -> void:
 		child_entered_tree.connect(notify_property_list_changed)
 		child_exiting_tree.connect(notify_property_list_changed)
 		return
-	_load_states_from_children()
-	if not initial_state.is_empty():
-		transition_to(initial_state, initial_args)
 
 
 func _validate_property(property: Dictionary) -> void:
@@ -163,6 +160,14 @@ func replace_states(states: Array[SMCState]) -> void:
 #region Private Methods --------------------------------------------------------
 
 
+func _initialize() -> void:
+	_load_states_from_children()
+	for state: SMCState in _states.values():
+		state.initialize()
+	if not initial_state.is_empty():
+		transition_to(initial_state, initial_args)
+
+
 func _attach_state(state: SMCState, replace: bool) -> void:
 	assert(is_instance_valid(state), "Failed to attach state. Invalid instance.")
 	if replace and _states.has(state.name):
@@ -170,7 +175,7 @@ func _attach_state(state: SMCState, replace: bool) -> void:
 	elif not replace:
 		assert(not _states.has(state.name), "Failed to attach state. Duplicate state %s." % state.name)
 	_states[state.name] = state
-	state.transition_requested.connect(transition_requested.emit)
+	state.transition_requested.connect(_on_state_transition_requested)
 	_resolve_dependencies(state, true, true)
 
 
@@ -207,8 +212,6 @@ func _load_states_from_children() -> void:
 	for node in get_children():
 		if node is SMCState:
 			_attach_state(node, false)
-	for state: SMCState in _states.values():
-		state.initialize()
 
 
 func _on_state_transition_requested(

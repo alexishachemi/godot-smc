@@ -66,9 +66,10 @@ func _enter_tree() -> void:
 		_internal_group.initial_state = initial_state
 		_internal_group.initial_args = initial_args
 	add_child(_internal_group)
-	_update_component_manager()
-	_update_service_manager()
-	_load_state_groups_from_children()
+
+
+func _ready() -> void:
+	_initialize()
 
 
 func _validate_property(property: Dictionary) -> void:
@@ -213,6 +214,14 @@ func replace_groups(groups: Array[SMCStateGroup]) -> void:
 #region Private Methods --------------------------------------------------------
 
 
+func _initialize() -> void:
+	_update_component_manager()
+	_update_service_manager()
+	_load_state_groups_from_children()
+	for group: SMCStateGroup in _groups.values():
+		group._initialize()
+
+
 func _attach_group(group: SMCStateGroup, replace: bool) -> void:
 	assert(is_instance_valid(group), "Failed to attach group. Invalid instance.")
 	if replace and _groups.has(group.name):
@@ -222,6 +231,8 @@ func _attach_group(group: SMCStateGroup, replace: bool) -> void:
 	_groups[group.name] = group
 	group.state_changed.connect(state_changed.emit.bind(group))
 	group.transition_requested.connect(transition_group_to)
+	group._component_manager = _component_manager
+	group._service_manager = _service_manager
 
 
 func _detach_group(group_name: StringName) -> void:
@@ -237,8 +248,6 @@ func _load_state_groups_from_children() -> void:
 	for node in get_children():
 		if node is SMCStateGroup:
 			_attach_group(node, false)
-	for group: SMCStateGroup in _groups.values():
-		group._initialize()
 
 
 func _resolve_all_depensencies(

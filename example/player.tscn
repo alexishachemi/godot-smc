@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://b40vb5q4kvckd"]
 
 [ext_resource type="Texture2D" uid="uid://xkjsbirwqwja" path="res://example/sprites/player air spin 48x48.png" id="1_0r6n0"]
-[ext_resource type="Script" uid="uid://c712gcd5pmmhy" path="res://addons/smc/state_machine/state_machine.gd" id="1_jar21"]
 [ext_resource type="Script" uid="uid://b3ofa8ojb6uy3" path="res://addons/smc/component_manager/component_manager.gd" id="2_b38yy"]
 [ext_resource type="Texture2D" uid="uid://oo8paenm5g7g" path="res://example/sprites/player jump 48x48.png" id="2_pgo3p"]
 [ext_resource type="Script" uid="uid://dvo8g880e6cj3" path="res://example/components/animator_component.gd" id="3_5kbpg"]
@@ -13,15 +12,16 @@
 [ext_resource type="Texture2D" uid="uid://dm68y1bhfojsw" path="res://example/sprites/player wall slide 48x48.png" id="7_t1kmx"]
 [ext_resource type="Script" uid="uid://b5pcx1bjv1pry" path="res://example/components/physics_component.gd" id="8_8csqj"]
 [ext_resource type="Script" uid="uid://c785yh6ee8onn" path="res://example/components/input_component.gd" id="9_b06cs"]
-[ext_resource type="Script" uid="uid://dn30an082n81q" path="res://example/states/idle.gd" id="10_gip77"]
 [ext_resource type="Script" uid="uid://bn1hxvb78vgew" path="res://example/components/stats_component.gd" id="10_tj3p2"]
 [ext_resource type="Script" uid="uid://no7ex8ncpus2" path="res://example/components/wall_detector_component.gd" id="11_vra7y"]
-[ext_resource type="Script" uid="uid://c3mqbcsjk6w3n" path="res://example/states/run.gd" id="13_3k7vp"]
-[ext_resource type="Script" uid="uid://dk33guetheawv" path="res://example/states/jump.gd" id="13_jk8jh"]
-[ext_resource type="Script" uid="uid://lrsjxwnnwn4e" path="res://example/states/fall.gd" id="14_oees3"]
-[ext_resource type="Script" uid="uid://c2qceaogn8nd6" path="res://example/states/land.gd" id="16_bvkri"]
-[ext_resource type="Script" uid="uid://btqaca5cj6m2d" path="res://example/states/wall_land.gd" id="19_w2h4h"]
-[ext_resource type="Script" uid="uid://bkt5tia52s2xt" path="res://example/states/wall_slide.gd" id="22_taks6"]
+[ext_resource type="Script" uid="uid://c712gcd5pmmhy" path="res://addons/smc/state_machine/state_machine.gd" id="15_g47x1"]
+[ext_resource type="Script" uid="uid://dn30an082n81q" path="res://example/states/idle.gd" id="16_y3gco"]
+[ext_resource type="Script" uid="uid://lrsjxwnnwn4e" path="res://example/states/fall.gd" id="17_tvhrg"]
+[ext_resource type="Script" uid="uid://dk33guetheawv" path="res://example/states/jump.gd" id="18_htere"]
+[ext_resource type="Script" uid="uid://c2qceaogn8nd6" path="res://example/states/land.gd" id="19_0fx7m"]
+[ext_resource type="Script" uid="uid://c3mqbcsjk6w3n" path="res://example/states/run.gd" id="20_75o5u"]
+[ext_resource type="Script" uid="uid://btqaca5cj6m2d" path="res://example/states/wall_land.gd" id="21_ey33x"]
+[ext_resource type="Script" uid="uid://bkt5tia52s2xt" path="res://example/states/wall_slide.gd" id="22_gjt7h"]
 [ext_resource type="Script" uid="uid://kr1356jrk8rd" path="res://addons/smc/utils/state_label.gd" id="23_g47x1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5rfm7"]
@@ -444,30 +444,31 @@ jumps = 2
 script = ExtResource("11_vra7y")
 detectors = [NodePath("../../LeftWallDetector"), NodePath("../../RightWallDetector")]
 
-[node name="StateMachine" type="Node" parent="." unique_id=2014551567]
-script = ExtResource("1_jar21")
+[node name="SMCStateMachine" type="Node" parent="." unique_id=1900812912]
+script = ExtResource("15_g47x1")
 initial_state = &"idle"
+metadata/_custom_type_script = "uid://c712gcd5pmmhy"
 
-[node name="idle" type="Node" parent="StateMachine" unique_id=819461455]
-script = ExtResource("10_gip77")
+[node name="idle" type="Node" parent="SMCStateMachine" unique_id=2000051415]
+script = ExtResource("16_y3gco")
 
-[node name="run" type="Node" parent="StateMachine" unique_id=880550716]
-script = ExtResource("13_3k7vp")
+[node name="fall" type="Node" parent="SMCStateMachine" unique_id=1044973332]
+script = ExtResource("17_tvhrg")
 
-[node name="jump" type="Node" parent="StateMachine" unique_id=1922911857]
-script = ExtResource("13_jk8jh")
+[node name="jump" type="Node" parent="SMCStateMachine" unique_id=1679164895]
+script = ExtResource("18_htere")
 
-[node name="fall" type="Node" parent="StateMachine" unique_id=940453971]
-script = ExtResource("14_oees3")
+[node name="land" type="Node" parent="SMCStateMachine" unique_id=380647856]
+script = ExtResource("19_0fx7m")
 
-[node name="land" type="Node" parent="StateMachine" unique_id=90017214]
-script = ExtResource("16_bvkri")
+[node name="run" type="Node" parent="SMCStateMachine" unique_id=1384610874]
+script = ExtResource("20_75o5u")
 
-[node name="wall_land" type="Node" parent="StateMachine" unique_id=975310444]
-script = ExtResource("19_w2h4h")
+[node name="wall_land" type="Node" parent="SMCStateMachine" unique_id=270432199]
+script = ExtResource("21_ey33x")
 
-[node name="wall_slide" type="Node" parent="StateMachine" unique_id=590178431]
-script = ExtResource("22_taks6")
+[node name="wall_slide" type="Node" parent="SMCStateMachine" unique_id=1793498217]
+script = ExtResource("22_gjt7h")
 
 [node name="StateLabel" type="Label" parent="." unique_id=769698629]
 offset_left = -93.0
