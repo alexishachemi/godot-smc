@@ -155,6 +155,12 @@ func get_all_state_groups() -> Array[SMCStateGroup]:
 	return groups 
 
 
+## Returns the internal state group of the machine 
+## or [code]null[/code] if there isn't any.
+func get_internal_state_group() -> SMCStateGroup:
+	return _internal_group
+
+
 ## Attaches [param group] to this machine.
 ## [br][br]
 ## Causes an error if a group with the same name is already attached to the state machine.
